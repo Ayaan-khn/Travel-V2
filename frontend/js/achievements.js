@@ -1,10 +1,19 @@
-// 1. Data Initialization
-let travelData = JSON.parse(localStorage.getItem('travelAppProgress')) || {
-    totalDistance: 0,
-    locationsVisited: 0,
-    unlockedAchievements: [],
-    lastPosition: null
-};
+// 1. Storage util (per-user progress)
+function getProgressKey() {
+    const user = getCurrentUser();
+    return "travelAppProgress_" + (user?.username || "guest");
+}
+
+function getTravelData() {
+    return JSON.parse(localStorage.getItem(getProgressKey())) || {
+        totalDistance: 0,
+        locationsVisited: 0,
+        unlockedAchievements: [],
+        lastPosition: null
+    };
+}
+
+let travelData = getTravelData();
 
 // 2. Achievement List
 const milestoneDefinitions = [
@@ -24,14 +33,19 @@ function renderAchievements() {
     if (!grid) return;
     grid.innerHTML = '';
 
+    const data = getTravelData();
+    travelData = data;
     milestoneDefinitions.forEach(ach => {
-        const isUnlocked = travelData.unlockedAchievements.includes(ach.id);
+        const isUnlocked = data.unlockedAchievements.includes(ach.id);
         const card = document.createElement('div');
         card.className = `achievement-card ${isUnlocked ? 'unlocked' : 'locked'}`;
 
         let progressHTML = '';
-        if (!isUnlocked && ach.threshold) {
-            progressHTML = `<div class="progress-text">${Math.floor(travelData.totalDistance)}/${ach.threshold}km</div>`;
+        if (!isUnlocked && ach.type === "distance" && ach.threshold) {
+            progressHTML = `<div class="progress-text">${Math.floor(data.totalDistance)}/${ach.threshold}km</div>`;
+        }
+        if (!isUnlocked && ach.type === "location" && ach.count) {
+            progressHTML = `<div class="progress-text">${data.locationsVisited || 0}/${ach.count} places</div>`;
         }
 
         card.innerHTML = `
@@ -56,26 +70,44 @@ function updateProgressBar() {
 
 // 4. Persistence & Logic
 function unlockAchievement(id) {
-    if (!travelData.unlockedAchievements.includes(id)) {
-        travelData.unlockedAchievements.push(id);
-        localStorage.setItem('travelAppProgress', JSON.stringify(travelData));
+    const data = getTravelData();
+    if (!data.unlockedAchievements.includes(id)) {
+        data.unlockedAchievements.push(id);
+        localStorage.setItem(getProgressKey(), JSON.stringify(data));
+        travelData = data;
         renderAchievements();
-        // You can add a toast notification here
     }
 }
 
-// Check distance achievements
+// Check all achievement types (distance, location, special)
 function checkMilestones() {
+    const data = getTravelData();
+    travelData = data;
+    let changed = false;
     milestoneDefinitions.forEach(ach => {
-        if (ach.type === 'distance' && travelData.totalDistance >= ach.threshold) {
-            unlockAchievement(ach.id);
+        if (data.unlockedAchievements.includes(ach.id)) return;
+        if (ach.type === "distance" && data.totalDistance >= (ach.threshold || 0)) {
+            data.unlockedAchievements.push(ach.id);
+            changed = true;
+        }
+        if (ach.type === "location" && data.locationsVisited >= (ach.count || 1)) {
+            data.unlockedAchievements.push(ach.id);
+            changed = true;
         }
     });
+    if (changed) {
+        localStorage.setItem(getProgressKey(), JSON.stringify(data));
+        renderAchievements();
+    }
 }
 
 // Initial Load
 document.addEventListener('DOMContentLoaded', () => {
-    renderAchievements();
-    // Simulate initial check
+    if (!getCurrentUser()) {
+        window.location.href = "login.html";
+        return;
+    }
+    travelData = getTravelData();
     checkMilestones();
+    renderAchievements();
 });

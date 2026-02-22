@@ -1,3 +1,21 @@
+/* ================= ACHIEVEMENTS PAGE (extends global) ================= */
+
+.overall-progress-container {
+    height: 12px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+#main-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #00d2ff);
+    border-radius: 6px;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
 .achievement-wrapper {
     min-height: 100vh;
     padding-top: 120px;
@@ -34,9 +52,24 @@
     transition: 0.25s ease;
 }
 
+.achievement-card.locked {
+    opacity: 0.7;
+    filter: grayscale(0.5);
+}
+
+.achievement-card.unlocked {
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
 .achievement-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+}
+
+.progress-text {
+    font-size: 12px;
+    margin-top: 8px;
+    opacity: 0.9;
 }
 
 .achievement-icon {

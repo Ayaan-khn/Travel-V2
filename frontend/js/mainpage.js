@@ -1,27 +1,20 @@
-// ================= STORAGE UTIL =================
-function getCurrentUser() {
-    return JSON.parse(localStorage.getItem("loggedInUser"));
-}
-
-function setCurrentUser(user) {
-    localStorage.setItem("loggedInUser", JSON.stringify(user));
-}
-
-// ================= AUTH CHECK =================
-function requireAuth() {
-    const user = getCurrentUser();
-    if (!user) {
-        window.location.href = "Login.html";
-        return null;
-    }
-    return user;
-}
-
 // ================= MAIN PAGE INIT =================
 function initMainPage() {
     const xpValue = document.getElementById("xp-value");
     const pfp = document.getElementById("topPfp");
     const titleBtn = document.getElementById("title");
+
+    // Mainpage landing - if logged in, show Go to Map instead of Login/Register
+    if (!xpValue && !pfp && !titleBtn) {
+        const user = getCurrentUser();
+        if (user) {
+            const group = document.getElementById("mainpageButtons");
+            if (group) {
+                group.innerHTML = '<button onclick="window.location.href=\'map.html\'" class="btn btn-primary">Go to Map</button>';
+            }
+        }
+        return;
+    }
 
     const user = requireAuth();
     if (!user) return;
@@ -45,14 +38,14 @@ function initMainPage() {
         }
 
         pfp.addEventListener("click", function () {
-            window.location.href = "Profile.html";
+            window.location.href = "profile.html";
         });
     }
 
     // Achievement Navigation
     if (titleBtn) {
         titleBtn.addEventListener("click", function () {
-            window.location.href = "Achievement.html";
+            window.location.href = "achievements.html";
         });
     }
 }

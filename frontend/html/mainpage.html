@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>TravelSync</title>
+    <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/mainpage.css">
 
 </head>
@@ -10,18 +11,16 @@
 <div class="card main-card">
     <h1 class="brand-title">TravelSync</h1>
 
-    <div class="button-group">
-        <button onclick="window.location.href='Login.html'"
-                class="btn btn-primary">
+    <div class="button-group" id="mainpageButtons">
+        <button onclick="window.location.href='login.html'" id="loginBtn" class="btn btn-primary">
             Login
         </button>
-
-        <button onclick="window.location.href='Register.html'"
-                class="btn btn-secondary">
+        <button onclick="window.location.href='register.html'" id="registerBtn" class="btn btn-secondary">
             Register
         </button>
     </div>
 </div>
+<script src="../js/common.js"></script>
 <script src="../js/mainpage.js"></script>
 </body>
 </html>

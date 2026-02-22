@@ -1,22 +1,3 @@
-// ================= STORAGE UTIL =================
-function getCurrentUser() {
-    return JSON.parse(localStorage.getItem("loggedInUser"));
-}
-
-function setCurrentUser(user) {
-    localStorage.setItem("loggedInUser", JSON.stringify(user));
-}
-
-// ================= AUTH CHECK =================
-function requireAuth() {
-    const user = getCurrentUser();
-    if (!user) {
-        window.location.href = "Login.html";
-        return null;
-    }
-    return user;
-}
-
 // ================= PROFILE INIT =================
 function initProfile() {
 
@@ -30,7 +11,21 @@ function initProfile() {
 
     if (usernameEl) usernameEl.textContent = user.username;
     if (bioEl) bioEl.textContent = user.bio || "No bio added.";
-    if (profilePfp) profilePfp.src = user.pfp || "";
+    if (profilePfp) profilePfp.src = user.pfp || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.username)}`;
+
+    const xp = user.xp ?? 0;
+    const level = 1 + Math.floor(xp / 100);
+    const xpInLevel = xp % 100;
+    const titleEl = document.getElementById("title-value");
+    const tierEl = document.getElementById("tier-value");
+    const levelEl = document.getElementById("level-value");
+    const xpEl = document.getElementById("xp-value");
+    const xpBarFill = document.getElementById("xpBarFill");
+    if (titleEl) titleEl.textContent = getTitleFromLevel(level);
+    if (tierEl) tierEl.textContent = getTierFromLevel(level);
+    if (levelEl) levelEl.textContent = level;
+    if (xpEl) xpEl.textContent = xp;
+    if (xpBarFill) xpBarFill.style.width = xpInLevel + "%";
 
     if (banner && user.banner) {
         banner.style.backgroundImage = `url(${user.banner})`;
@@ -114,6 +109,21 @@ function editBio() {
     }
 }
 
+// ================= XP / TITLE / TIER / LEVEL =================
+function getTitleFromLevel(level) {
+    if (level >= 10) return "Legend";
+    if (level >= 6) return "Explorer";
+    if (level >= 3) return "Adventurer";
+    return "Beginner";
+}
+
+function getTierFromLevel(level) {
+    if (level >= 10) return "Master";
+    if (level >= 6) return "Expert";
+    if (level >= 3) return "Intermediate";
+    return "Novice";
+}
+
 // ================= FILE INPUT HANDLERS =================
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -136,23 +146,86 @@ document.addEventListener("DOMContentLoaded", function () {
         reader.readAsDataURL(file);
     });
 
-    // Banner Upload
+    // Banner Upload - show crop modal
     document.getElementById("bannerInput")?.addEventListener("change", function(e) {
         const file = e.target.files[0];
         if (!file) return;
 
         const reader = new FileReader();
         reader.onload = function(event) {
-            const user = getCurrentUser();
-            user.banner = event.target.result;
-            setCurrentUser(user);
-
-            const banner = document.getElementById("profileBanner");
-            if (banner) {
-                banner.style.backgroundImage = `url(${event.target.result})`;
-                banner.style.backgroundSize = "cover";
-            }
+            openBannerCropModal(event.target.result);
         };
         reader.readAsDataURL(file);
+        e.target.value = "";
     });
+
+    // Crop modal close/cancel
+    document.getElementById("cropModalClose")?.addEventListener("click", closeBannerCropModal);
+    document.getElementById("cropCancelBtn")?.addEventListener("click", closeBannerCropModal);
+    document.getElementById("cropApplyBtn")?.addEventListener("click", applyBannerCrop);
 });
+
+// ================= BANNER CROP =================
+let bannerCropper = null;
+
+function openBannerCropModal(imageSrc) {
+    const modal = document.getElementById("bannerCropModal");
+    const img = document.getElementById("bannerCropImg");
+    if (!modal || !img) return;
+
+    if (bannerCropper) {
+        bannerCropper.destroy();
+        bannerCropper = null;
+    }
+
+    img.src = imageSrc;
+    modal.classList.add("show");
+
+    img.onload = function() {
+        bannerCropper = new Cropper(img, {
+            aspectRatio: 3 / 1,
+            viewMode: 1,
+            dragMode: "move",
+            autoCropArea: 1,
+            guides: true,
+            center: true
+        });
+    };
+}
+
+function closeBannerCropModal() {
+    const modal = document.getElementById("bannerCropModal");
+    if (bannerCropper) {
+        bannerCropper.destroy();
+        bannerCropper = null;
+    }
+    if (modal) modal.classList.remove("show");
+}
+
+function applyBannerCrop() {
+    if (!bannerCropper) return;
+
+    const canvas = bannerCropper.getCroppedCanvas({
+        width: 1200,
+        height: 400,
+        imageSmoothingEnabled: true
+    });
+
+    if (!canvas) return;
+
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+    const user = getCurrentUser();
+    if (user) {
+        user.banner = dataUrl;
+        setCurrentUser(user);
+    }
+
+    const banner = document.getElementById("profileBanner");
+    if (banner) {
+        banner.style.backgroundImage = `url(${dataUrl})`;
+        banner.style.backgroundSize = "cover";
+        banner.style.backgroundPosition = "center";
+    }
+
+    closeBannerCropModal();
+}

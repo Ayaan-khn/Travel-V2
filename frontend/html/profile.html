@@ -2,47 +2,92 @@
 <html>
 <head>
     <title>Profile</title>
+    <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 </head>
 <body class="centered">
 
+<nav class="profile-nav">
+    <a href="map.html" class="nav-link">← Map</a>
+    <a href="achievements.html" class="nav-link">Achievements</a>
+</nav>
+
 <div class="card profile-container">
 
-    <div class="banner" id="profileBanner"></div>
-
-<div class="pfp-wrapper">
-    <img id="profilePfp" class="profile-pfp">
-   <div class="pfp-menu-btn" id="pfpMenuBtn">&#8942;</div>
-
-    <div class="pfp-menu" id="pfpMenu">
-
-        <div class="menu-close" id="closeMenu">X</div>
-
-        <div onclick="generateNewAvatar()">Generate Avatar</div>
-        <div onclick="uploadPhoto()">Upload Photo</div>
-        <div onclick="uploadBanner()">Upload Banner</div>
-        <div onclick="editBio()">Edit Bio</div>
+    <div class="banner" id="profileBanner">
+        <div class="banner-overlay"></div>
     </div>
-</div>
-    <h2 id="username"></h2>
-    <p id="bioText"></p>
-    <br>
-     <div id="xp-boxs"><h3><u>Experience:</u></h3>
 
-            <b><u>Title:</u></b><span id="title-value"> Beginner</span><br>
-    <b><u>Tier:</u></b> <span id="tier-value"> Novice</span><br>
-    <b><u>Level</u></b>: <span id="level-value"> 1 </span><br>
-   <u><b> XP </b></u>: <span id="xp-value">0</span><br>
-   <a href="../html/achievements.html" class="link-text">-----Achievements-----</a>
-</div>
+    <div class="pfp-wrapper">
+        <img id="profilePfp" class="profile-pfp">
+        <div class="pfp-menu-btn" id="pfpMenuBtn" title="Customize">&#8942;</div>
+        <div class="pfp-menu" id="pfpMenu">
+            <div class="menu-close" id="closeMenu">×</div>
+            <div onclick="generateNewAvatar()">Generate Avatar</div>
+            <div onclick="uploadPhoto()">Upload Photo</div>
+            <div onclick="uploadBanner()">Upload Banner</div>
+            <div onclick="editBio()">Edit Bio</div>
+        </div>
+    </div>
 
-    <br>
-    <button class="btn btn-primary" onclick="logout()">Logout</button>
+    <h2 id="username" class="profile-username"></h2>
+    <p id="bioText" class="profile-bio"></p>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-label">Title</span>
+            <span id="title-value" class="stat-value">Beginner</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Tier</span>
+            <span id="tier-value" class="stat-value">Novice</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Level</span>
+            <span id="level-value" class="stat-value">1</span>
+        </div>
+        <div class="stat-card stat-card-xp">
+            <span class="stat-label">XP</span>
+            <span id="xp-value" class="stat-value">0</span>
+        </div>
+    </div>
+
+    <div class="xp-bar-container">
+        <div class="xp-bar-fill" id="xpBarFill"></div>
+        <span class="xp-bar-label">Progress to next level</span>
+    </div>
+
+    <a href="achievements.html" class="achievements-link">
+        <span class="achievements-icon">🏆</span> View Achievements
+    </a>
+
+    <button class="btn btn-primary btn-logout" onclick="logout()">Logout</button>
 
 </div>
 
 <input type="file" id="photoInput" hidden accept="image/*">
 <input type="file" id="bannerInput" hidden accept="image/*">
-<script src="../js/map.js"></script>
+
+<!-- Banner Crop Modal -->
+<div id="bannerCropModal" class="crop-modal">
+    <div class="crop-modal-content">
+        <div class="crop-modal-header">
+            <h3>Crop Banner</h3>
+            <button type="button" class="crop-modal-close" id="cropModalClose">&times;</button>
+        </div>
+        <div class="crop-container">
+            <img id="bannerCropImg" src="" alt="Banner">
+        </div>
+        <div class="crop-modal-footer">
+            <button type="button" class="btn btn-secondary" id="cropCancelBtn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="cropApplyBtn">Apply</button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/common.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+<script src="../js/profile.js"></script>
 </body>
 </html>

@@ -1,16 +1,3 @@
-// ================= STORAGE UTIL =================
-function getUsers() {
-    return JSON.parse(localStorage.getItem("users")) || [];
-}
-
-function getCurrentUser() {
-    return JSON.parse(localStorage.getItem("loggedInUser"));
-}
-
-function setCurrentUser(user) {
-    localStorage.setItem("loggedInUser", JSON.stringify(user));
-}
-
 // ================= LOGIN =================
 function initLogin() {
     const form = document.getElementById("loginForm");
@@ -34,13 +21,8 @@ function initLogin() {
         }
 
         setCurrentUser(validUser);
-
-        // Redirect after successful login
-        window.location.href = "Map.html";
+        window.location.href = "map.html";
     });
 }
 
-// ================= INIT =================
-document.addEventListener("DOMContentLoaded", function () {
-    initLogin();
-});
+document.addEventListener("DOMContentLoaded", initLogin);

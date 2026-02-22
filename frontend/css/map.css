@@ -1,23 +1,9 @@
-/* ================= MAP PAGE ================= */
-
-:root {
-    --primary: #1d6fdc;
-    --primary-dark: #1a59c4;
-    --bg-gradient: linear-gradient(135deg, #4fa3d1, #17c3c8);
-}
-
-/* Reset */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', sans-serif;
-}
+/* ================= MAP PAGE (extends global) ================= */
 
 body {
     height: 100vh;
     overflow: hidden;
-    background: var(--bg-gradient);
+    display: block;
 }
 
 /* ================= MAP CONTAINER ================= */
@@ -53,6 +39,54 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
+}
+
+/* Start Exploring Button */
+#exploreBtn {
+    background: linear-gradient(135deg, #00c853, #00e676);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,200,83,0.4);
+    transition: all 0.25s ease;
+}
+
+#exploreBtn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0,200,83,0.5);
+}
+
+#exploreBtn:active {
+    transform: translateY(0);
+}
+
+#exploreBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Logout / General Buttons in top-bar */
+#top-bar .btn,
+#top-bar .btn-primary {
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    transition: 0.25s ease;
+}
+
+#top-bar .btn:hover,
+#top-bar .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
 
 /* Title Button */

@@ -14,7 +14,14 @@ const roadsLayer = L.tileLayer(
 
 const railwayLayer = L.tileLayer(
     'https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
-    { attribution: '&copy; OpenRailwayMap contributors', maxZoom: 19 }
+    {
+        attribution: '&copy; OpenRailwayMap | Data &copy; OpenStreetMap',
+        maxZoom: 19,
+        minZoom: 4,
+        subdomains: 'abc',
+        zIndexOffset: 1000,
+        crossOrigin: true
+    }
 );
 
 const satelliteLayer = L.tileLayer(
@@ -62,6 +69,25 @@ layerToggleControl.onAdd = () => {
 };
 
 layerToggleControl.addTo(map);
+
+// ================= LAYER PANEL BINDINGS =================
+document.addEventListener("DOMContentLoaded", function initLayerPanel() {
+    document.querySelector("#baseRoads")?.addEventListener("change", function() {
+        if (this.checked) setBaseLayer("roads");
+    });
+    document.querySelector("#baseSatellite")?.addEventListener("change", function() {
+        if (this.checked) setBaseLayer("satellite");
+    });
+    const baseRoads = document.querySelector("#baseRoads");
+    if (baseRoads) baseRoads.checked = true;
+
+    document.querySelector("#overlayRailway")?.addEventListener("change", function() {
+        toggleOverlay("railway");
+    });
+    document.querySelector("#overlay3d")?.addEventListener("change", function() {
+        toggleOverlay("3d");
+    });
+});
 
 // ================= LAYER LOGIC =================
 function setBaseLayer(type) {
@@ -121,30 +147,118 @@ for (const key in claimedTerritories) {
     drawTerritory(t.lat, t.lng);
 }
 
+// ================= TRAVEL PROGRESS (for achievements) =================
+function getProgressKey() {
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+    return "travelAppProgress_" + (user?.username || "guest");
+}
+
+function getTravelProgress() {
+    return JSON.parse(localStorage.getItem(getProgressKey())) || {
+        totalDistance: 0,
+        locationsVisited: 0,
+        unlockedAchievements: [],
+        lastPosition: null
+    };
+}
+
+function saveTravelProgress(progress) {
+    localStorage.setItem(getProgressKey(), JSON.stringify(progress));
+}
+
+function haversineDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
+function checkAndUnlockAchievements(progress) {
+    const definitions = [
+        { id: "first_loc", type: "location", count: 1 },
+        { id: "dist_10", type: "distance", threshold: 10 },
+        { id: "dist_100", type: "distance", threshold: 100 },
+        { id: "dist_1000", type: "distance", threshold: 1000 },
+        { id: "heat_seeker", type: "location", count: 5 }
+    ];
+    definitions.forEach(ach => {
+        if (progress.unlockedAchievements.includes(ach.id)) return;
+        if (ach.type === "distance" && progress.totalDistance >= ach.threshold) {
+            progress.unlockedAchievements.push(ach.id);
+        }
+        if (ach.type === "location" && progress.locationsVisited >= ach.count) {
+            progress.unlockedAchievements.push(ach.id);
+        }
+    });
+    saveTravelProgress(progress);
+}
+
 // ================= USER LOCATION =================
 let userMarker = null;
 let userLat = null;
 let userLng = null;
+let geolocationWatchId = null;
 
-if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(position => {
+function onLocationUpdate(position) {
+    const { latitude, longitude } = position.coords;
 
-        const { latitude, longitude } = position.coords;
-        userLat = latitude;
-        userLng = longitude;
+    const progress = getTravelProgress();
+    if (progress.lastPosition) {
+        const dist = haversineDistance(
+            progress.lastPosition.lat, progress.lastPosition.lng,
+            latitude, longitude
+        );
+        progress.totalDistance += dist;
+    }
+    progress.lastPosition = { lat: latitude, lng: longitude };
+    saveTravelProgress(progress);
+    checkAndUnlockAchievements(progress);
 
-        if (!userMarker) {
-            userMarker = L.marker([latitude, longitude]).addTo(map);
-            map.setView([latitude, longitude], 14);
-        } else {
-            userMarker.setLatLng([latitude, longitude]);
+    userLat = latitude;
+    userLng = longitude;
+
+    if (!userMarker) {
+        userMarker = L.marker([latitude, longitude]).addTo(map);
+        map.setView([latitude, longitude], 14);
+    } else {
+        userMarker.setLatLng([latitude, longitude]);
+    }
+
+    claimTerritory(latitude, longitude);
+}
+
+function startGeolocation(zoomOnFirstFix) {
+    if (!navigator.geolocation) return;
+    if (geolocationWatchId !== null) {
+        if (userLat != null && userLng != null && zoomOnFirstFix) {
+            map.setView([userLat, userLng], 14);
         }
-
-        claimTerritory(latitude, longitude);
-
-    },
-    error => console.error("Geolocation error:", error),
-    { enableHighAccuracy: true });
+        return;
+    }
+    const exploreBtn = document.getElementById("exploreBtn");
+    if (exploreBtn) exploreBtn.disabled = true;
+    let hasZoomed = false;
+    geolocationWatchId = navigator.geolocation.watchPosition(
+        (pos) => {
+            onLocationUpdate(pos);
+            if (exploreBtn) exploreBtn.disabled = false;
+            if (zoomOnFirstFix && !hasZoomed) {
+                hasZoomed = true;
+                map.setView([pos.coords.latitude, pos.coords.longitude], 14);
+            }
+        },
+        (err) => {
+            console.error("Geolocation error:", err);
+            if (exploreBtn) exploreBtn.disabled = false;
+            alert(err.code === 1 ? "Location permission denied." : "Unable to get your location.");
+        },
+        { enableHighAccuracy: true, maximumAge: 60000 }
+    );
 }
 
 // ================= LOCATE BUTTON =================
@@ -156,8 +270,11 @@ locateControl.onAdd = () => {
 
     button.onclick = e => {
         e.preventDefault();
-        if (userLat && userLng) map.setView([userLat, userLng], 14);
-        else alert("Location not available yet.");
+        if (userLat != null && userLng != null) {
+            map.setView([userLat, userLng], 14);
+        } else {
+            startGeolocation(true);
+        }
     };
 
     return button;
@@ -219,6 +336,19 @@ map.on("click", async (e) => {
             ).addTo(map);
         }
 
+        const progress = getTravelProgress();
+        progress.locationsVisited = (progress.locationsVisited || 0) + 1;
+        saveTravelProgress(progress);
+        checkAndUnlockAchievements(progress);
+
+        const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (currentUser) {
+            currentUser.xp = (currentUser.xp || 0) + 10;
+            setCurrentUser(currentUser);
+            const xpEl = document.getElementById("xp-value");
+            if (xpEl) xpEl.textContent = currentUser.xp;
+        }
+
         clickMarker.setPopupContent(`
             <div class="map-popup">
                 <b>${locationName}</b><br><br>
@@ -245,14 +375,26 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    // Explore button - starts geolocation (one permission request) and zooms to user
+    const exploreBtn = document.getElementById("exploreBtn");
+    if (exploreBtn) {
+        exploreBtn.addEventListener("click", () => {
+            if (userLat != null && userLng != null) {
+                map.setView([userLat, userLng], 14);
+            } else {
+                startGeolocation(true);
+            }
+        });
+    }
+
     // Set XP
     const xpEl = document.getElementById("xp-value");
     if (xpEl) xpEl.textContent = currentUser.xp || 0;
 
-    // Set Profile Picture
+    // Set Profile Picture (use pfp to match register/profile)
     const pfp = document.getElementById("topPfp");
     if (pfp) {
-        pfp.src = currentUser.profilePic || "https://i.pravatar.cc/100";
+        pfp.src = currentUser.pfp || currentUser.profilePic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(currentUser.username)}`;
 
         pfp.addEventListener("click", () => {
             window.location.href = "profile.html";
@@ -268,10 +410,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
-
-// ================= LOGOUT =================
-
-function logout() {
-    localStorage.removeItem("loggedInUser");
-    window.location.href = "login.html";
-}

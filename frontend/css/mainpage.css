@@ -1,36 +1,9 @@
-/* ================= MAIN PAGE ================= */
+/* ================= MAIN PAGE (extends global) ================= */
 
-:root {
-    --primary: #1d6fdc;
-    --primary-dark: #1a59c4;
-    --bg-gradient: linear-gradient(135deg, #4fa3d1, #17c3c8);
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', sans-serif;
-}
-
-body {
-    min-height: 100vh;
-    background: var(--bg-gradient);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-}
-
-/* Glass Card */
-.card {
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(20px);
-    border-radius: 24px;
+.main-card {
     padding: 60px 50px;
     width: 420px;
     text-align: center;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
 }
 
 .brand-title {
@@ -38,33 +11,12 @@ body {
     margin-bottom: 40px;
 }
 
-/* Buttons */
 .button-group {
     display: flex;
     gap: 20px;
     justify-content: center;
 }
 
-.btn {
-    padding: 12px 24px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.2s ease;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-}
-
-.btn-secondary {
-    background: white;
-    color: var(--primary);
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+.button-group .btn-primary {
+    width: auto;
 }

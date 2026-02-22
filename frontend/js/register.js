@@ -1,12 +1,3 @@
-// ================= STORAGE UTIL =================
-function getUsers() {
-    return JSON.parse(localStorage.getItem("users")) || [];
-}
-
-function saveUsers(users) {
-    localStorage.setItem("users", JSON.stringify(users));
-}
-
 // ================= REGISTER =================
 function initRegister() {
     const form = document.getElementById("registerForm");
@@ -50,11 +41,8 @@ function initRegister() {
         saveUsers(users);
 
         alert("Account created successfully.");
-        window.location.href = "Login.html";
+        window.location.href = "login.html";
     });
 }
 
-// ================= INIT =================
-document.addEventListener("DOMContentLoaded", function () {
-    initRegister();
-});
+document.addEventListener("DOMContentLoaded", initRegister);
