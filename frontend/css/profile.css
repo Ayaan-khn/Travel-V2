@@ -1,0 +1,153 @@
+/* ================= PROFILE PAGE ================= */
+
+:root {
+    --primary: #1d6fdc;
+    --primary-dark: #1a59c4;
+    --bg-gradient: linear-gradient(135deg, #4fa3d1, #17c3c8);
+}
+
+/* Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg-gradient);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ================= PROFILE CONTAINER ================= */
+
+.profile-container {
+    width: 100%;
+    max-width: 600px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    overflow: hidden;
+    text-align: center;
+    padding-bottom: 40px;
+}
+
+/* ================= BANNER ================= */
+
+.banner {
+    height: 160px;
+    background: linear-gradient(135deg, var(--primary), #00d2ff);
+    background-size: cover;
+    background-position: center;
+}
+
+/* ================= PROFILE IMAGE WRAPPER ================= */
+
+.pfp-wrapper {
+    position: relative;
+    margin-top: -60px; /* Pull image over banner */
+    display: inline-block;
+}
+
+/* ================= PROFILE IMAGE ================= */
+
+.profile-pfp {
+    width: 120px;
+    height: 120px;
+    border: 6px solid white;
+    border-radius: 50%;
+    object-fit: cover;
+    background: white;
+}
+
+/* ================= USERNAME ================= */
+
+#username {
+    margin-top: 15px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+/* ================= BIO ================= */
+
+#bioText {
+    margin-top: 10px;
+    font-size: 14px;
+    opacity: 0.9;
+    padding: 0 20px;
+}
+
+/* ================= THREE DOT BUTTON ================= */
+
+.pfp-menu-btn {
+    position: absolute;
+    right: -10px;
+    bottom: 10px;
+    background: var(--primary);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* ================= DROPDOWN MENU ================= */
+
+.pfp-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    color: #333;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    display: none;
+    flex-direction: column;
+    padding: 10px;
+    min-width: 170px;
+    z-index: 9999;
+}
+
+.pfp-menu.show {
+    display: flex;
+}
+
+/* ================= MENU ITEMS ================= */
+
+.pfp-menu div {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.pfp-menu div + div {
+    margin-top: 4px;
+}
+
+.pfp-menu div:hover {
+    background: #f2f2f2;
+}
+
+/* ================= CLOSE BUTTON ================= */
+
+.menu-close {
+    text-align: right;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 4px 8px;
+    color: #666;
+}
+
+.menu-close:hover {
+    color: red;
+}

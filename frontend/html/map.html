@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../css/map.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+
+<div id="top-bar">
+
+    <div class="left-section">
+        <img id="topPfp" class="top-pfp">
+        <div id="xp-box">
+            XP: <span id="xp-value">0</span>
+        </div>
+    </div>
+     <button id="exploreBtn">Start Exploring</button>
+    <span id="title">Achievement</span>
+
+    <button class="btn btn-primary" onclick="logout()">Logout</button>
+
+</div>
+<div id="layerPanel" class="layer-panel">
+    <div><strong>Base Layers</strong></div>
+    <label><input type="radio" name="base" onclick="setBaseLayer('roads')"> Default</label><br>
+    <label><input type="radio" name="base" onclick="setBaseLayer('satellite')"> Satellite</label>
+
+    <hr>
+
+    <div><strong>Overlays</strong></div>
+    <label><input type="checkbox" onclick="toggleOverlay('railway')"> Railways</label><br>
+    <label><input type="checkbox" onclick="toggleOverlay('3d')"> 3D </label>
+</div>
+
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.osmbuildings.org/4.1.1/OSMBuildings-Leaflet.js"></script>
+<script src="../js/map.js"></script>
+
+</body>
+</html>

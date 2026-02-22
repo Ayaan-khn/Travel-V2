@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements - Trip Simulator</title>
+    <link rel="stylesheet" href="../css/achievements.css">
+</head>
+<body class="centered">
+    <div class="achievement-wrapper">
+        <div class="achievement-container">
+            <div class="achievement-title">Your Achievements</div>
+
+            <!-- Progress Bar Section -->
+            <div class="overall-progress-container">
+                <div id="main-progress-bar"></div>
+            </div>
+
+            <!-- This is where achievements.js will put all your cards -->
+            <div class="achievement-grid" id="achievement-grid"></div>
+
+            <div style="margin-top: 40px; text-align: center;">
+                <button class="btn btn-primary" onclick="window.location.href='Map.html'">
+                    Back to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Logic Script -->
+    <script src="../js/achievements.js"></script>
+</body>
+</html>

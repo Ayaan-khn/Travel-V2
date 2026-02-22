@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+alembic
+psycopg2-binary
+python-jose
+passlib[bcrypt]
+pydantic
+python-multipart
+geoalchemy2
+redis
+boto3
+
+# pip install -r Travel-V2/backend/requirements.txt
+# THE ABOVE COMMAND IS TO INSTALL THE REQUIREMENTS

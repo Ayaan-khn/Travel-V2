@@ -1,0 +1,186 @@
+/* ================= MAP PAGE ================= */
+
+:root {
+    --primary: #1d6fdc;
+    --primary-dark: #1a59c4;
+    --bg-gradient: linear-gradient(135deg, #4fa3d1, #17c3c8);
+}
+
+/* Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-gradient);
+}
+
+/* ================= MAP CONTAINER ================= */
+
+#map {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+/* ================= TOP BAR ================= */
+
+#top-bar {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    z-index: 9999;
+    color: white;
+}
+
+/* Left Section */
+.left-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Title Button */
+#title {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 8px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+#title:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* XP / Level Info */
+.stat-box {
+    background: white;
+    color: var(--primary);
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    border: 3px solid var(--primary);
+}
+
+/* Profile Image */
+.top-pfp {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    object-fit: cover;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.top-pfp:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* ================= LEAFLET POPUP ================= */
+
+.leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    animation: popupFadeScale 0.3s ease forwards;
+}
+
+@keyframes popupFadeScale {
+    from { opacity: 0; transform: scale(0.8); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ================= CUSTOM LAYER BUTTON ================= */
+
+.layer-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    background: var(--primary);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    background-image: url("https://cdn-icons-png.flaticon.com/512/1828/1828919.png");
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.layer-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ================= LAYER PANEL ================= */
+
+.layer-panel {
+    position: fixed;
+    bottom: 120px;
+    right: 30px;
+    background: white;
+    color: var(--primary);
+    padding: 15px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    display: none;
+    z-index: 9999;
+    width: 200px;
+}
+
+.layer-panel.show {
+    display: block;
+}
+
+.layer-panel button {
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: var(--primary);
+    color: white;
+    font-weight: 500;
+}
+
+/* ================= LOCATE BUTTON ================= */
+
+.locate-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    transition: 0.2s ease;
+}
+
+.locate-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Leaflet spacing */
+.leaflet-bottom.leaflet-right .leaflet-control {
+    margin-bottom: 14px;
+}
