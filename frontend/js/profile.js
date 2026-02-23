@@ -22,11 +22,15 @@ function initProfile() {
     const levelEl = document.getElementById("level-value");
     const xpEl = document.getElementById("xp-value");
     const xpBarFill = document.getElementById("xpBarFill");
-   const progress = JSON.parse(
-    localStorage.getItem(getProgressKey())
+  const progress = JSON.parse(
+    localStorage.getItem(
+        typeof getProgressKey === "function"
+            ? getProgressKey()
+            : "travelAppProgress_" + user.username
+    )
 ) || {};
-titleEl.textContent = getTitleFromProgress(progress);
-tierEl.textContent = getTierFromXP(xp);
+if (titleEl) titleEl.textContent = getTitleFromProgress(progress);
+if (tierEl) tierEl.textContent = getTierFromXP(xp);
     if (levelEl) levelEl.textContent = level;
     if (xpEl) xpEl.textContent = xp;
     if (xpBarFill) xpBarFill.style.width = xpInLevel + "%";
