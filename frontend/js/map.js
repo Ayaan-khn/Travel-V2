@@ -296,6 +296,26 @@ function onLocationUpdate(position) {
     }
 
     progress.lastPosition = { lat: latitude, lng: longitude };
+    // ===== REAL EXPLORATION SYSTEM =====
+// Count unique areas visited (GPS based)
+
+const cellSize = 0.005; // ~500 meters
+const latCell = Math.floor(latitude / cellSize);
+const lngCell = Math.floor(longitude / cellSize);
+const cellKey = `${latCell}_${lngCell}`;
+
+if (!progress.visitedCells) progress.visitedCells = {};
+
+if (!progress.visitedCells[cellKey]) {
+
+    progress.visitedCells[cellKey] = true;
+
+    progress.locationsVisited =
+        (progress.locationsVisited || 0) + 1;
+
+    saveTravelProgress(progress);
+    checkAndUnlockAchievements(progress);
+}
     saveTravelProgress(progress);
     checkAndUnlockAchievements(progress);
 
@@ -416,10 +436,7 @@ map.on("click", async (e) => {
             ).addTo(map);
         }
 
-        const progress = getTravelProgress();
-        progress.locationsVisited = (progress.locationsVisited || 0) + 1;
-        saveTravelProgress(progress);
-        checkAndUnlockAchievements(progress);
+        
 
         clickMarker.setPopupContent(`
             <div class="map-popup">
