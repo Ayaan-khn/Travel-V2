@@ -188,11 +188,6 @@
     font-size: 20px;
 }
 
-/* ================= LOGOUT ================= */
-
-.btn-logout {
-    padding: 12px 32px;
-}
 
 /* ================= THREE DOT BUTTON ================= */
 
@@ -461,4 +456,42 @@
 .profile-pfp {
     border: 3px solid gold;
     box-shadow: 0 0 12px rgba(255,215,0,0.6);
+}
+/* ================= NAV BAR LAYOUT ================= */
+
+.profile-nav {
+  display: flex;
+  justify-content: space-between; /* ← Map left, Logout right */
+  align-items: center;
+  padding: 10px 18px;
+}
+
+/* ================= MATCH BUTTON STYLE ================= */
+
+.profile-nav .nav-link,
+.profile-nav .logout-btn {
+  background-color: rgba(255,255,255,0.2);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 600;
+}
+
+/* Hover — same for both */
+.profile-nav .nav-link:hover,
+.profile-nav .logout-btn:hover {
+   background: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Optional — danger tint on logout hover */
+.logout-btn:hover {
+  background-color: rgba(255,80,80,0.35);
 }

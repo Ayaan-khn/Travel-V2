@@ -10,7 +10,8 @@
 
 <nav class="profile-nav">
     <a href="map.html" class="nav-link">← Map</a>
-    <a href="achievements.html" class="nav-link">Achievements</a>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
 </nav>
 
 <div class="card profile-container">
@@ -23,14 +24,14 @@
         <img id="profilePfp" class="profile-pfp">
         <div class="pfp-menu-btn" id="pfpMenuBtn" title="Customize">&#8942;</div>
         <div class="pfp-menu" id="pfpMenu">
-            <div class="menu-close" id="closeMenu">Close×</div>
+            <div class="menu-close" id="closeMenu"> Close ×
             <div onclick="generateNewAvatar()">Generate Avatar</div>
             <div onclick="uploadPhoto()">Upload Photo</div>
             <div onclick="uploadBanner()">Upload Banner</div>
             <div onclick="editBio()">Edit Bio</div>
-        </div>
+       </div> 
     </div>
-
+</div>
     <h2 id="username" class="profile-username"></h2>
     <p id="bioText" class="profile-bio"></p>
 
@@ -61,9 +62,6 @@
     <a href="achievements.html" class="achievements-link">
         <span class="achievements-icon">🎖️</span> View Achievements
     </a>
-
-    <button class="btn btn-primary btn-logout" onclick="logout()">Logout</button>
-
 </div>
 
 <input type="file" id="photoInput" hidden accept="image/*">
