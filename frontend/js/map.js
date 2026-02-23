@@ -270,23 +270,38 @@ function onLocationUpdate(position) {
     const { latitude, longitude } = position.coords;
 
     const progress = getTravelProgress();
-    if (progress.lastPosition) {
-        const dist = haversineDistance(
-            progress.lastPosition.lat, progress.lastPosition.lng,
-            latitude, longitude
-        );
-        progress.totalDistance += dist;
-        
-        // ===== XP FROM WALKING DISTANCE =====
+   if (progress.lastPosition) {
+
+    const dist = haversineDistance(
+        progress.lastPosition.lat,
+        progress.lastPosition.lng,
+        latitude,
+        longitude
+    );
+
+    // ALWAYS track total distance
+    progress.totalDistance += dist;
+
+    // ===== XP FROM WALKING DISTANCE =====
+    // Ignore tiny GPS drift (< 50 meters)
+
+    if (dist > 0.05) {
+
         const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
         if (currentUser) {
 
-            const xpGain = Math.floor(dist * 100); // 5 XP per km
+            const xpGain = Math.floor(dist * 100); // ≈ 1 XP per 10 m
 
             if (xpGain > 0) {
+
                 currentUser.xp = (currentUser.xp || 0) + xpGain;
 
-                localStorage.setItem("loggedInUser", JSON.stringify(currentUser));
+                localStorage.setItem(
+                    "loggedInUser",
+                    JSON.stringify(currentUser)
+                );
+
                 setCurrentUser(currentUser);
 
                 const xpEl = document.getElementById("xp-value");
@@ -294,7 +309,7 @@ function onLocationUpdate(position) {
             }
         }
     }
-
+}
     progress.lastPosition = { lat: latitude, lng: longitude };
     // ===== REAL EXPLORATION SYSTEM =====
 // Count unique areas visited (GPS based)
@@ -316,8 +331,6 @@ if (!progress.visitedCells[cellKey]) {
     saveTravelProgress(progress);
     checkAndUnlockAchievements(progress);
 }
-    saveTravelProgress(progress);
-    checkAndUnlockAchievements(progress);
 
     userLat = latitude;
     userLng = longitude;
@@ -329,7 +342,9 @@ if (!progress.visitedCells[cellKey]) {
         userMarker.setLatLng([latitude, longitude]);
     }
 
+   if (progress.totalDistance > 0.1) { // >100m travelled
     claimTerritory(latitude, longitude);
+}
 }
 
 function startGeolocation(zoomOnFirstFix) {
