@@ -111,125 +111,7 @@ function toggleOverlay(type) {
             : threeDLayer.addTo(map);
     }
 }
-// ================= DAILY QUEST =================
-function questKey() {
-  const u = getCurrentUser();
-  return "dailyQuest_" + new Date().toDateString() + "_" + (u?.username || "guest");
-}
 
-let dailyQuest = JSON.parse(localStorage.getItem(questKey())) || {
-  walked: 0,
-  discovered: 0,
-  rewardClaimed: false
-};
-
-function saveQuest() {
-  localStorage.setItem(questKey(), JSON.stringify(dailyQuest));
-}
-
-// call when distance added
-function updateQuestDistance(km) {
-  dailyQuest.walked += km;
-  if (!dailyQuest.rewardClaimed && dailyQuest.walked >= 2) {
-    addXP(100);
-    dailyQuest.rewardClaimed = true;
-  }
-  saveQuest();
-}
-// ================= PLAYER STATS SYSTEM =================
-// ================= PLAYER PROGRESSION SYSTEM =================
-
-// --- helpers (use your existing loggedInUser) ---
-function getCurrentUser() {
-  return JSON.parse(localStorage.getItem("loggedInUser"));
-}
-
-// --- per-user key ---
-function statsKey() {
-  const u = getCurrentUser();
-  return "playerStats_" + (u?.username || "guest");
-}
-
-// --- load or create ---
-let playerStats = JSON.parse(localStorage.getItem(statsKey())) || {
-  xp: 0,
-  level: 1,
-  title: "&#x1F30D; Beginner",   // 🌍
-  tier: "&#x1F331; Novice"       // 🌱
-};
-
-const MAX_LEVEL = 50;
-
-// --- formulas ---
-function xpNeeded(level) {
-  return level * 100;
-}
-
-// --- title & tier ---
-function calcTitle(lv) {
-  if (lv >= 50) return "&#x1F451; Legend";          // 👑
-  if (lv >= 40) return "&#x1F3C6; Master Explorer"; // 🏆
-  if (lv >= 30) return "&#x1F9ED; Veteran Explorer";// 🧭
-  if (lv >= 20) return "&#x1F3C5; Senior Explorer"; // 🏅
-  if (lv >= 10) return "&#x1F9ED; Explorer";        // 🧭
-  return "&#x1F30D; Beginner";                      // 🌍
-}
-
-function calcTier(lv) {
-  if (lv >= 50) return "&#x1F451; Legend";
-  if (lv >= 40) return "&#x1F3C6; Master";
-  if (lv >= 30) return "&#x2728; Elite";
-  if (lv >= 20) return "&#x1F9ED; Pathfinder";
-  if (lv >= 10) return "&#x1F9D7; Adventurer";
-  return "&#x1F331; Novice";
-}
-
-// --- save ---
-function saveStats() {
-  localStorage.setItem(statsKey(), JSON.stringify(playerStats));
-}
-
-// --- level up ---
-function checkLevelUp() {
-  while (
-    playerStats.level < MAX_LEVEL &&
-    playerStats.xp >= xpNeeded(playerStats.level)
-  ) {
-    playerStats.xp -= xpNeeded(playerStats.level);
-    playerStats.level++;
-    playerStats.title = calcTitle(playerStats.level);
-    playerStats.tier = calcTier(playerStats.level);
-  }
-  saveStats();
-}
-
-// --- add xp ---
-function addXP(amount) {
-  if (!Number.isFinite(amount) || amount <= 0) return;
-  if (playerStats.level >= MAX_LEVEL) return;
-  playerStats.xp += amount;
-  checkLevelUp();
-  updateHUD();
-}
-
-// --- update UI ---
-function updateHUD() {
-  const xpEl = document.getElementById("xp-value");
-  const lvlEl = document.getElementById("level-value");
-  const titleEl = document.getElementById("title-value");
-  const tierEl = document.getElementById("tier-value");
-
-  if (xpEl) xpEl.textContent = Math.floor(playerStats.xp);
-  if (lvlEl) lvlEl.textContent = playerStats.level;
-  if (titleEl) titleEl.innerHTML = playerStats.title;
-  if (tierEl) tierEl.innerHTML = playerStats.tier;
-
-  const bar = document.getElementById("xpBarFill");
-  if (bar) {
-    const pct = (playerStats.xp / xpNeeded(playerStats.level)) * 100;
-    bar.style.width = pct + "%";
-  }
-}
 // ================= TERRITORY SYSTEM (VISUAL ONLY) =================
 let claimedTerritories =
     JSON.parse(localStorage.getItem("claimedTerritories")) || {};
@@ -256,7 +138,6 @@ function claimTerritory(lat, lng) {
     if (claimedTerritories[key]) return;
 
     claimedTerritories[key] = { lat, lng };
-    addXP(20); // reward for new territory
     localStorage.setItem("claimedTerritories", JSON.stringify(claimedTerritories));
     drawTerritory(lat, lng);
 }
@@ -298,32 +179,23 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 }
 
 function checkAndUnlockAchievements(progress) {
-  const defs = [
-    { id: "first_loc", type: "location", count: 1 },
-    { id: "dist_10", type: "distance", threshold: 10 },
-    { id: "dist_100", type: "distance", threshold: 100 },
-    { id: "dist_1000", type: "distance", threshold: 1000 }
-  ];
-
-  let unlocked = 0;
-
-  defs.forEach(a => {
-    if (progress.unlockedAchievements.includes(a.id)) return;
-
-    if (a.type === "distance" && progress.totalDistance >= a.threshold) {
-      progress.unlockedAchievements.push(a.id);
-      unlocked++;
-    }
-
-    if (a.type === "location" && progress.locationsVisited >= a.count) {
-      progress.unlockedAchievements.push(a.id);
-      unlocked++;
-    }
-  });
-
-  saveTravelProgress(progress);
-
-  if (unlocked > 0) addXP(unlocked * 50);
+    const definitions = [
+        { id: "first_loc", type: "location", count: 1 },
+        { id: "dist_10", type: "distance", threshold: 10 },
+        { id: "dist_100", type: "distance", threshold: 100 },
+        { id: "dist_1000", type: "distance", threshold: 1000 },
+        { id: "heat_seeker", type: "location", count: 5 }
+    ];
+    definitions.forEach(ach => {
+        if (progress.unlockedAchievements.includes(ach.id)) return;
+        if (ach.type === "distance" && progress.totalDistance >= ach.threshold) {
+            progress.unlockedAchievements.push(ach.id);
+        }
+        if (ach.type === "location" && progress.locationsVisited >= ach.count) {
+            progress.unlockedAchievements.push(ach.id);
+        }
+    });
+    saveTravelProgress(progress);
 }
 
 // ================= USER LOCATION =================
@@ -342,17 +214,6 @@ function onLocationUpdate(position) {
             latitude, longitude
         );
         progress.totalDistance += dist;
-        // XP from movement (1 XP per 100 meters)
-       // ignore teleport > 2km
-       if (dist <= 2) {
-           progress.totalDistance += dist;
-  // 1 XP per 100 meters
-         addXP(dist * 10);
-
-        // Daily quest progress
-        updateQuestDistance(dist);
-
-        }
     }
     progress.lastPosition = { lat: latitude, lng: longitude };
     saveTravelProgress(progress);
@@ -421,24 +282,6 @@ locateControl.onAdd = () => {
 
 locateControl.addTo(map);
 
-
-
-// ================= DISCOVERY SYSTEM =================
-function discoveryKey() {
-  const u = getCurrentUser();
-  return "discovered_" + (u?.username || "guest");
-}
-
-let discovered = JSON.parse(localStorage.getItem(discoveryKey())) || {};
-
-function saveDiscovered() {
-  localStorage.setItem(discoveryKey(), JSON.stringify(discovered));
-}
-
-function getCell(lat, lng) {
-  const size = 0.02; // ~2 km grid
-  return `${Math.floor(lat/size)}_${Math.floor(lng/size)}`;
-}
 // ================= CLICK SYSTEM =================
 let clickMarker = null;
 let pathLine = null;
@@ -493,19 +336,19 @@ map.on("click", async (e) => {
             ).addTo(map);
         }
 
-       // Update progress ONLY (no XP)
-const progress = getTravelProgress();
-progress.locationsVisited = (progress.locationsVisited || 0) + 1;
-saveTravelProgress(progress);
-checkAndUnlockAchievements(progress);
-// --- discovery XP ---
-const cell = getCell(lat, lng);
+        const progress = getTravelProgress();
+        progress.locationsVisited = (progress.locationsVisited || 0) + 1;
+        saveTravelProgress(progress);
+        checkAndUnlockAchievements(progress);
 
-if (!discovered[cell]) {
-  discovered[cell] = true;
-  saveDiscovered();
-  addXP(30); // new area bonus
-}
+        const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (currentUser) {
+            currentUser.xp = (currentUser.xp || 0) + 10;
+            setCurrentUser(currentUser);
+            const xpEl = document.getElementById("xp-value");
+            if (xpEl) xpEl.textContent = currentUser.xp;
+        }
+
         clickMarker.setPopupContent(`
             <div class="map-popup">
                 <b>${locationName}</b><br><br>
@@ -546,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Set XP
     const xpEl = document.getElementById("xp-value");
-    if (xpEl) xpEl.textContent = Math.floor(playerStats.xp);
+    if (xpEl) xpEl.textContent = currentUser.xp || 0;
 
     // Set Profile Picture (use pfp to match register/profile)
     const pfp = document.getElementById("topPfp");

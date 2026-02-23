@@ -1,3 +1,4 @@
+
 // ================= PROFILE INIT =================
 function initProfile() {
 
@@ -229,21 +230,3 @@ function applyBannerCrop() {
 
     closeBannerCropModal();
 }
-function updateProfileStats() {
-    const stats = JSON.parse(localStorage.getItem("playerStats"));
-
-    if (!stats) return;
-
-    document.getElementById("xp-value").textContent = Math.floor(stats.xp);
-    document.getElementById("level-value").textContent = stats.level;
-    document.getElementById("title-value").textContent = stats.title;
-    document.getElementById("tier-value").textContent = stats.tier;
-
-    // XP progress bar
-    const neededXP = stats.level * 100;
-    const percent = (stats.xp / neededXP) * 100;
-
-    const bar = document.getElementById("xpBarFill");
-    if (bar) bar.style.width = percent + "%";
-}
-document.addEventListener("DOMContentLoaded", updateProfileStats);
