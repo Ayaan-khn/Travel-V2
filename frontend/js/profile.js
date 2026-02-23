@@ -121,12 +121,12 @@ function editBio() {
 function getTitleFromProgress(progress) {
 
     if (progress.totalDistance >= 1000) return "🌍 World Walker";
-    if (progress.totalDistance >= 300) return "🧭 Nomad";
+    if (progress.totalDistance >= 300) return "🏜️ Nomad";
     if (progress.locationsVisited >= 50) return "🏙️ Urban Explorer";
     if (progress.locationsVisited >= 10) return "🗺️ Trail Seeker";
     if (progress.unlockedAchievements?.length >= 5) return "🏅 Achiever";
 
-    return "🚶 Wanderer";
+    return "🧭 Wanderer";
 }
 function getTierFromXP(xp) {
 
@@ -136,7 +136,7 @@ function getTierFromXP(xp) {
     if (xp >= 1000) return "⚔️ Veteran";
     if (xp >= 500) return "🛡️ Expert";
     if (xp >= 200) return "🏹 Pathfinder";
-    return "🌱 Novice";
+    return "🌵 Novice";
 }
 // ================= FILE INPUT HANDLERS =================
 document.addEventListener("DOMContentLoaded", function () {
