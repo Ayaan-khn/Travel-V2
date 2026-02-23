@@ -138,6 +138,20 @@ function claimTerritory(lat, lng) {
     if (claimedTerritories[key]) return;
 
     claimedTerritories[key] = { lat, lng };
+    // ===== XP FOR NEW TERRITORY =====
+const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
+if (currentUser) {
+
+    const xpGain = 20;
+
+    currentUser.xp = (currentUser.xp || 0) + xpGain;
+
+    localStorage.setItem("loggedInUser", JSON.stringify(currentUser));
+    setCurrentUser(currentUser);
+
+    const xpEl = document.getElementById("xp-value");
+    if (xpEl) xpEl.textContent = currentUser.xp;
+}
     localStorage.setItem("claimedTerritories", JSON.stringify(claimedTerritories));
     drawTerritory(lat, lng);
 }
@@ -189,11 +203,59 @@ function checkAndUnlockAchievements(progress) {
     definitions.forEach(ach => {
         if (progress.unlockedAchievements.includes(ach.id)) return;
         if (ach.type === "distance" && progress.totalDistance >= ach.threshold) {
-            progress.unlockedAchievements.push(ach.id);
-        }
+
+    progress.unlockedAchievements.push(ach.id);
+
+    // ===== XP FOR ACHIEVEMENT =====
+    const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (currentUser) {
+
+        const xpRewardMap = {
+            first_loc: 50,
+            dist_10: 100,
+            dist_100: 300,
+            dist_1000: 800,
+            heat_seeker: 150
+        };
+
+        const xpGain = xpRewardMap[ach.id] || 100;
+
+        currentUser.xp = (currentUser.xp || 0) + xpGain;
+
+        localStorage.setItem("loggedInUser", JSON.stringify(currentUser));
+        setCurrentUser(currentUser);
+
+        const xpEl = document.getElementById("xp-value");
+        if (xpEl) xpEl.textContent = currentUser.xp;
+    }
+}
         if (ach.type === "location" && progress.locationsVisited >= ach.count) {
-            progress.unlockedAchievements.push(ach.id);
-        }
+
+    progress.unlockedAchievements.push(ach.id);
+
+    // ===== XP FOR ACHIEVEMENT =====
+    const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (currentUser) {
+
+        const xpRewardMap = {
+            first_loc: 50,
+            dist_10: 100,
+            dist_100: 300,
+            dist_1000: 800,
+            heat_seeker: 150
+        };
+
+        const xpGain = xpRewardMap[ach.id] || 100;
+
+        currentUser.xp = (currentUser.xp || 0) + xpGain;
+
+        localStorage.setItem("loggedInUser", JSON.stringify(currentUser));
+        setCurrentUser(currentUser);
+
+        const xpEl = document.getElementById("xp-value");
+        if (xpEl) xpEl.textContent = currentUser.xp;
+    }
+}
     });
     saveTravelProgress(progress);
 }
@@ -214,7 +276,25 @@ function onLocationUpdate(position) {
             latitude, longitude
         );
         progress.totalDistance += dist;
+        
+        // ===== XP FROM WALKING DISTANCE =====
+        const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (currentUser) {
+
+            const xpGain = Math.floor(dist * 100); // 5 XP per km
+
+            if (xpGain > 0) {
+                currentUser.xp = (currentUser.xp || 0) + xpGain;
+
+                localStorage.setItem("loggedInUser", JSON.stringify(currentUser));
+                setCurrentUser(currentUser);
+
+                const xpEl = document.getElementById("xp-value");
+                if (xpEl) xpEl.textContent = currentUser.xp;
+            }
+        }
     }
+
     progress.lastPosition = { lat: latitude, lng: longitude };
     saveTravelProgress(progress);
     checkAndUnlockAchievements(progress);
@@ -340,14 +420,6 @@ map.on("click", async (e) => {
         progress.locationsVisited = (progress.locationsVisited || 0) + 1;
         saveTravelProgress(progress);
         checkAndUnlockAchievements(progress);
-
-        const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
-        if (currentUser) {
-            currentUser.xp = (currentUser.xp || 0) + 10;
-            setCurrentUser(currentUser);
-            const xpEl = document.getElementById("xp-value");
-            if (xpEl) xpEl.textContent = currentUser.xp;
-        }
 
         clickMarker.setPopupContent(`
             <div class="map-popup">

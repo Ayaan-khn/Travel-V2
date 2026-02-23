@@ -112,16 +112,16 @@ function editBio() {
 
 // ================= XP / TITLE / TIER / LEVEL =================
 function getTitleFromLevel(level) {
-    if (level >= 10) return "Legend";
-    if (level >= 6) return "Explorer";
-    if (level >= 3) return "Adventurer";
+    if (level >= 30) return "Legend";
+    if (level >= 20) return "Explorer";
+    if (level >= 10) return "Adventurer";
     return "Beginner";
 }
 
 function getTierFromLevel(level) {
-    if (level >= 10) return "Master";
-    if (level >= 6) return "Expert";
-    if (level >= 3) return "Intermediate";
+    if (level >= 30) return "Master";
+    if (level >= 20) return "Expert";
+    if (level >= 10) return "Intermediate";
     return "Novice";
 }
 
