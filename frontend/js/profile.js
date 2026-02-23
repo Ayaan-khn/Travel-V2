@@ -22,8 +22,11 @@ function initProfile() {
     const levelEl = document.getElementById("level-value");
     const xpEl = document.getElementById("xp-value");
     const xpBarFill = document.getElementById("xpBarFill");
-    if (titleEl) titleEl.textContent = getTitleFromLevel(level);
-    if (tierEl) tierEl.textContent = getTierFromLevel(level);
+   const progress = JSON.parse(
+    localStorage.getItem(getProgressKey())
+) || {};
+titleEl.textContent = getTitleFromProgress(progress);
+tierEl.textContent = getTierFromXP(xp);
     if (levelEl) levelEl.textContent = level;
     if (xpEl) xpEl.textContent = xp;
     if (xpBarFill) xpBarFill.style.width = xpInLevel + "%";
@@ -111,20 +114,26 @@ function editBio() {
 }
 
 // ================= XP / TITLE / TIER / LEVEL =================
-function getTitleFromLevel(level) {
-    if (level >= 30) return "Legend";
-    if (level >= 20) return "Explorer";
-    if (level >= 10) return "Adventurer";
-    return "Beginner";
-}
+function getTitleFromProgress(progress) {
 
-function getTierFromLevel(level) {
-    if (level >= 30) return "Master";
-    if (level >= 20) return "Expert";
-    if (level >= 10) return "Intermediate";
-    return "Novice";
-}
+    if (progress.totalDistance >= 1000) return "🌍 World Walker";
+    if (progress.totalDistance >= 300) return "🧭 Nomad";
+    if (progress.locationsVisited >= 50) return "🏙️ Urban Explorer";
+    if (progress.locationsVisited >= 10) return "🗺️ Trail Seeker";
+    if (progress.unlockedAchievements?.length >= 5) return "🏅 Achiever";
 
+    return "🚶 Wanderer";
+}
+function getTierFromXP(xp) {
+
+    if (xp >= 10000) return "🌌 Legend";
+    if (xp >= 5000) return "💎 Master";
+    if (xp >= 2500) return "🔥 Elite";
+    if (xp >= 1000) return "⚔️ Veteran";
+    if (xp >= 500) return "🛡️ Expert";
+    if (xp >= 200) return "🏹 Pathfinder";
+    return "🌱 Novice";
+}
 // ================= FILE INPUT HANDLERS =================
 document.addEventListener("DOMContentLoaded", function () {
 
