@@ -271,7 +271,7 @@ function showExploreNotification() {
   const toast = document.getElementById("toast");
   if (!toast) return;
 
-  toast.textContent = "🌍 Exploration Started — Tracking your journey";
+  toast.textContent = "Exploration Started - Tracking your journey";
   toast.classList.add("show");
 
   setTimeout(() => {
@@ -410,6 +410,8 @@ locateControl.onAdd = () => {
 
 locateControl.addTo(map);
 
+
+
 // ================= CLICK SYSTEM =================
 let clickMarker = null;
 let pathLine = null;
@@ -464,7 +466,7 @@ map.on("click", async (e) => {
             ).addTo(map);
         }
 
-        
+
 
         clickMarker.setPopupContent(`
             <div class="map-popup">
@@ -480,7 +482,6 @@ map.on("click", async (e) => {
     }
 });
 
-// ================= USER BUTTONS =================
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -553,3 +554,7 @@ if (exploreBtn) {
     }
 
 });
+
+
+
+

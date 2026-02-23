@@ -9,19 +9,18 @@
 <body>
 
 <div id="top-bar">
-
     <div class="left-section">
         <img id="topPfp" class="top-pfp">
         <div id="xp-box">
             XP: <span id="xp-value">0</span>
         </div>
     </div>
-     <button id="exploreBtn" class="explore-btn">Start Exploring</button>
+
+    <button id="exploreBtn" class="explore-btn">Start Exploring</button>
     <span id="title">Achievement</span>
-
     <button class="btn btn-primary" onclick="logout()">Logout</button>
-
 </div>
+
 <div id="layerPanel" class="layer-panel">
     <div><strong>Base Layers</strong></div>
     <label><input type="radio" name="base" value="roads" id="baseRoads"> Default</label><br>
@@ -32,16 +31,30 @@
     <div><strong>Overlays</strong></div>
     <label><input type="checkbox" id="overlayRailway"> Railways</label>
     <small style="display:block;margin-top:2px;opacity:0.8">Zoom in to see train routes</small><br>
-    <label><input type="checkbox" id="overlay3d"> 3D </label>
+    <label><input type="checkbox" id="overlay3d"> 3D</label>
 </div>
 
-
 <div id="map"></div>
+
+
+<!-- Search Modal -->
+<div id="searchModal" class="search-modal">
+    <div class="search-box">
+        <div class="search-header">
+            <span>Search Location</span>
+            <button id="closeSearchModal">✖</button>
+        </div>
+        <input type="text" id="modalSearchInput" placeholder="Enter place name..." />
+        <button id="modalSearchBtn">Search</button>
+    </div>
+</div>
 
 <script src="../js/common.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.osmbuildings.org/4.1.1/OSMBuildings-Leaflet.js"></script>
 <script src="../js/map.js"></script>
+
 <div id="toast" class="toast"></div>
+
 </body>
 </html>

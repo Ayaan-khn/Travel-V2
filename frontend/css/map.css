@@ -1,4 +1,4 @@
-/* ================= MAP PAGE (extends global) ================= */
+/* ================= MAP PAGE ================= */
 
 body {
     height: 100vh;
@@ -30,7 +30,7 @@ body {
     background: rgba(255,255,255,0.25);
     backdrop-filter: blur(15px);
     border-radius: 20px;
-    z-index: 9999;
+    z-index: 5000;
     color: white;
 }
 
@@ -41,7 +41,8 @@ body {
     gap: 12px;
 }
 
-/* Start Exploring Button */
+/* ================= EXPLORE BUTTON ================= */
+
 #exploreBtn {
     background: linear-gradient(135deg, #00c853, #00e676);
     color: white;
@@ -60,18 +61,13 @@ body {
     box-shadow: 0 8px 25px rgba(0,200,83,0.5);
 }
 
-#exploreBtn:active {
-    transform: translateY(0);
-}
-
 #exploreBtn:disabled {
     opacity: 0.7;
     cursor: not-allowed;
-    transform: none;
 }
 
+/* ================= GENERAL TOP BAR BUTTONS ================= */
 
-/* Logout / General Buttons in top-bar */
 #top-bar .btn,
 #top-bar .btn-primary {
     padding: 10px 20px;
@@ -90,7 +86,7 @@ body {
     box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
 
-/* Title Button */
+/* Title */
 #title {
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
@@ -106,17 +102,8 @@ body {
     box-shadow: 0 8px 20px rgba(0,0,0,0.25);
 }
 
-/* XP / Level Info */
-.stat-box {
-    background: white;
-    color: var(--primary);
-    padding: 8px 14px;
-    border-radius: 10px;
-    font-weight: 600;
-    border: 3px solid var(--primary);
-}
+/* ================= PROFILE ================= */
 
-/* Profile Image */
 .top-pfp {
     width: 55px;
     height: 55px;
@@ -144,7 +131,7 @@ body {
     to   { opacity: 1; transform: scale(1); }
 }
 
-/* ================= CUSTOM LAYER BUTTON ================= */
+/* ================= LAYER BUTTON ================= */
 
 .layer-btn {
     width: 48px;
@@ -176,24 +163,12 @@ body {
     border-radius: 14px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     display: none;
-    z-index: 9999;
+    z-index: 6000;
     width: 200px;
 }
 
 .layer-panel.show {
     display: block;
-}
-
-.layer-panel button {
-    width: 100%;
-    margin-bottom: 8px;
-    padding: 8px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    background: var(--primary);
-    color: white;
-    font-weight: 500;
 }
 
 /* ================= LOCATE BUTTON ================= */
@@ -215,10 +190,12 @@ body {
     transform: translateY(-2px);
 }
 
-/* Leaflet spacing */
 .leaflet-bottom.leaflet-right .leaflet-control {
     margin-bottom: 14px;
 }
+
+/* ================= TOAST ================= */
+
 .toast {
   position: fixed;
   bottom: 24px;
@@ -232,7 +209,7 @@ body {
   opacity: 0;
   pointer-events: none;
   transition: 0.35s;
-  z-index: 99999;
+  z-index: 9000;
 }
 
 .toast.show {

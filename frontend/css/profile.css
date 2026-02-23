@@ -150,7 +150,7 @@
     height: 100%;
     background: linear-gradient(90deg, var(--primary), #00e676);
     border-radius: 4px;
-    width: 0%;
+    width: 0;
     transition: width 0.4s ease;
 }
 
@@ -264,7 +264,7 @@
 }
 
 .menu-close:hover {
-    color: #e53935;
+    color: #dc1d1d;
 }
 
 /* ================= BANNER CROP MODAL ================= */
