@@ -70,6 +70,7 @@ body {
     transform: none;
 }
 
+
 /* Logout / General Buttons in top-bar */
 #top-bar .btn,
 #top-bar .btn-primary {
@@ -217,4 +218,24 @@ body {
 /* Leaflet spacing */
 .leaflet-bottom.leaflet-right .leaflet-control {
     margin-bottom: 14px;
+}
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  background: rgba(0,0,0,0.85);
+  color: white;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.35s;
+  z-index: 99999;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }

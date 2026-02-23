@@ -266,6 +266,19 @@ let userLat = null;
 let userLng = null;
 let geolocationWatchId = null;
 
+function showExploreNotification() {
+
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+
+  toast.textContent = "🌍 Exploration Started — Tracking your journey";
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
+}
+
 function onLocationUpdate(position) {
     const { latitude, longitude } = position.coords;
 
@@ -480,18 +493,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Explore button - starts geolocation (one permission request) and zooms to user
-    const exploreBtn = document.getElementById("exploreBtn");
-    if (exploreBtn) {
-        exploreBtn.addEventListener("click", () => {
-            if (userLat != null && userLng != null) {
-                map.setView([userLat, userLng], 14);
-            } else {
-                startGeolocation(true);
-            }
-        });
+ const exploreBtn = document.getElementById("exploreBtn");
+
+let exploring = false;
+
+if (exploreBtn) {
+
+  exploreBtn.addEventListener("click", () => {
+
+    if (!exploring) {
+
+      // ▶ START EXPLORATION
+      startGeolocation(true);
+
+      exploring = true;
+
+      exploreBtn.classList.add("active");
+      exploreBtn.textContent = "Stop Exploring";
+
+      // 🔔 SHOW TOAST
+      showExploreNotification();
+
+    } else {
+
+      // ⏹ STOP EXPLORATION
+      if (geolocationWatchId !== null) {
+        navigator.geolocation.clearWatch(geolocationWatchId);
+        geolocationWatchId = null;
+      }
+
+      exploring = false;
+
+      exploreBtn.classList.remove("active");
+      exploreBtn.textContent = "Start Exploring";
     }
 
-    // Set XP
+  });
+
+}  // Set XP
     const xpEl = document.getElementById("xp-value");
     if (xpEl) xpEl.textContent = currentUser.xp || 0;
 
