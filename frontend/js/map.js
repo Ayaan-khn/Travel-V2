@@ -475,8 +475,16 @@ searchControl.onAdd = () => {
     L.DomEvent.disableClickPropagation(button);
 
     button.onclick = () => {
-        document.getElementById("searchPanel").classList.add("show");
-    };
+    const panel = document.getElementById("searchPanel");
+    const input = document.getElementById("searchInput");
+
+    panel.classList.add("show");
+
+    setTimeout(() => {
+        input.focus();
+        input.select(); // optional: selects existing text
+    }, 200);
+};
 
     return button;
 };
