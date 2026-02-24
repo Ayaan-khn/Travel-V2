@@ -410,6 +410,21 @@ locateControl.onAdd = () => {
 
 locateControl.addTo(map);
 
+// ================= SEARCH BUTTON =================
+const searchControl = L.control({ position: 'topleft' });
+
+searchControl.onAdd = () => {
+    const button = L.DomUtil.create('button', 'search-btn');
+    L.DomEvent.disableClickPropagation(button);
+
+    button.onclick = () => {
+        document.getElementById("searchPanel").classList.add("show");
+    };
+
+    return button;
+};
+
+searchControl.addTo(map);
 
 
 // ================= CLICK SYSTEM =================
@@ -555,6 +570,128 @@ if (exploreBtn) {
 
 });
 
+// ================= SEARCH LOGIC =================
+// ================= SEARCH LOGIC =================
 
+let searchMarker = null;
+let debounceTimer = null;
 
+document.addEventListener("DOMContentLoaded", () => {
 
+    const panel = document.getElementById("searchPanel");
+    const closeBtn = document.getElementById("closeSearchPanel");
+    const input = document.getElementById("searchInput");
+    const suggestionsBox = document.getElementById("searchSuggestions");
+    const goBtn = document.getElementById("searchGoBtn");
+
+    // ---- Close Panel ----
+    closeBtn.addEventListener("click", () => {
+        panel.classList.remove("show");
+    });
+
+    // ---- Execute Search (Arrow or Enter) ----
+    async function executeSearch(query) {
+
+        if (!query || query.length < 2) return;
+
+        try {
+
+            const res = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(query)}&limit=1`
+            );
+
+            const data = await res.json();
+            if (!data.length) return;
+
+            const lat = parseFloat(data[0].lat);
+            const lon = parseFloat(data[0].lon);
+
+            map.setView([lat, lon], 14);
+
+            if (!searchMarker)
+                searchMarker = L.marker([lat, lon]).addTo(map);
+            else
+                searchMarker.setLatLng([lat, lon]);
+
+            panel.classList.remove("show");
+
+        } catch (err) {
+            console.error("Search failed:", err);
+        }
+    }
+
+    // ---- Arrow Click ----
+    goBtn.addEventListener("click", () => {
+        executeSearch(input.value.trim());
+    });
+
+    // ---- Enter Key ----
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            executeSearch(input.value.trim());
+        }
+    });
+
+    // ---- Live Suggestions ----
+    input.addEventListener("input", () => {
+
+        const query = input.value.trim();
+        clearTimeout(debounceTimer);
+
+        if (query.length < 3) {
+            suggestionsBox.innerHTML = "";
+            return;
+        }
+
+        debounceTimer = setTimeout(async () => {
+
+            try {
+
+                suggestionsBox.innerHTML = "Searching...";
+
+                const res = await fetch(
+                    `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(query)}&limit=8`
+                );
+
+                const data = await res.json();
+
+                suggestionsBox.innerHTML = "";
+
+                if (!data.length) {
+                    suggestionsBox.innerHTML = "No results found";
+                    return;
+                }
+
+                data.forEach(place => {
+
+                    const item = document.createElement("div");
+                    item.className = "search-item";
+                    item.textContent = place.display_name;
+
+                    item.addEventListener("click", () => {
+
+                        const lat = parseFloat(place.lat);
+                        const lon = parseFloat(place.lon);
+
+                        map.setView([lat, lon], 14);
+
+                        if (!searchMarker)
+                            searchMarker = L.marker([lat, lon]).addTo(map);
+                        else
+                            searchMarker.setLatLng([lat, lon]);
+
+                        panel.classList.remove("show");
+                    });
+
+                    suggestionsBox.appendChild(item);
+                });
+
+            } catch (err) {
+                console.error("Suggestion error:", err);
+                suggestionsBox.innerHTML = "Search failed";
+            }
+
+        }, 400);
+    });
+
+});
