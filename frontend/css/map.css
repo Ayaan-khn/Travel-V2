@@ -53,7 +53,7 @@ body {
 #exploreBtn {
     background: linear-gradient(135deg, #00c853, #00e676);
     color: white;
-    border: none;
+    border: 1px solid transparent;
     padding: 12px 28px;
     border-radius: 14px;
     font-weight: 600;
@@ -61,6 +61,7 @@ body {
     cursor: pointer;
     box-shadow: 0 6px 20px rgba(0,200,83,0.4);
     transition: all 0.25s ease;
+    box-sizing: border-box;
 }
 
 #exploreBtn:hover {
@@ -81,10 +82,11 @@ body {
     border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
-    border: none;
+    border: 1px solid transparent;
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
     transition: 0.25s ease;
+    box-sizing: border-box;
 }
 
 #top-bar .btn:hover,
@@ -102,6 +104,8 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: 0.25s ease;
+    border: 1px solid transparent;
+    box-sizing: border-box;
 }
 
 #title:hover {
@@ -110,6 +114,15 @@ body {
 }
 
 /* ================= PROFILE ================= */
+
+#xp-box {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+}
 
 .top-pfp {
     width: 55px;
@@ -133,10 +146,43 @@ body {
     border-radius: 12px;
     animation: popupFadeScale 0.3s ease forwards;
     margin-top: 60px;
+    overflow: visible;
+    padding-bottom: 0;
 }
 
 .leaflet-popup-tip {
     margin-top: 60px;
+}
+
+/* Move close button inside popup container */
+.leaflet-popup-close-button {
+    top: 8px !important;
+    right: 8px !important;
+    width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7) !important;
+    border-radius: 50% !important;
+    color: white !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    z-index: 10;
+}
+
+.leaflet-popup-close-button:hover {
+    background: rgba(0, 0, 0, 0.9) !important;
+    color: #ff7800 !important;
+}
+
+/* Smooth transitions for all interactive elements */
+button, .btn, .layer-btn, .locate-btn, .search-btn, .theme-btn, .marker-btn {
+    transition: all 0.2s ease !important;
+}
+
+button:active, .btn:active {
+    transform: scale(0.95) !important;
 }
 
 /* custom popup content used by click handler - DAY MODE (Futuristic Game Style) */
@@ -193,43 +239,33 @@ body {
     border-bottom: 1px solid rgba(29, 111, 220, 0.3);
 }
 
-/* NIGHT MODE - Keep Neon Cyan Futuristic Look */
+/* NIGHT MODE - Neon Cyan Dark Futuristic Look (No blur/light effects) */
 body.dark-mode .map-popup {
     color: #0ff;
-    background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(0, 0, 0, 0.9));
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), 0 0 40px rgba(0, 255, 255, 0.3), 0 0 60px rgba(0, 255, 255, 0.1), inset 0 0 30px rgba(0, 255, 255, 0.05);
+    background: #000000;
+    box-shadow: 0 0 12px #0ff, 0 0 24px rgba(0, 255, 255, 0.4);
     font-family: 'Courier New', monospace;
     border: 2px solid #0ff;
-    text-shadow: 0 0 10px #0ff, 0 0 20px rgba(0, 255, 255, 0.5);
+    text-shadow: 0 0 10px #0ff;
 }
 
 body.dark-mode .map-popup .popup-header {
-    background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(0, 0, 0, 0.8));
+    background: #000000;
     color: #0ff;
-    padding: 8px 12px;
-    border-radius: 8px 8px 0 0;
+    padding: 6px 10px;
+    border-radius: 6px 6px 0 0;
     text-align: center;
     font-size: 14px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    border-bottom: 2px solid #0ff;
-    text-shadow: 0 0 10px #0ff;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    border-bottom: 1px solid #0ff;
 }
 
 body.dark-mode .map-popup .section-title {
-    margin-top: 12px;
-    font-weight: 700;
+    margin-top: 10px;
+    font-weight: 600;
     font-size: 12px;
     color: #0ff;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 0 0 10px #0ff;
-    padding-bottom: 4px;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.5);
+    letter-spacing: 1px;
 }
 
 /* click marker custom icon */
@@ -520,6 +556,177 @@ body.dark-mode .search-item {
 
 body.dark-mode .search-item:hover {
     background: rgba(255,255,255,0.12);
+}
+
+/* Dark mode - Layer button */
+body.dark-mode .layer-btn {
+    background: #1a1a2e;
+    background-image: url("https://cdn-icons-png.flaticon.com/512/1828/1828919.png");
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #0ff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* Dark mode - Layer panel */
+body.dark-mode .layer-panel {
+    background: #0a0a15;
+    color: #0ff;
+    border: 1px solid #0ff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+body.dark-mode .layer-panel hr {
+    border-color: rgba(0, 255, 255, 0.3);
+}
+
+body.dark-mode .layer-panel label {
+    color: #0ff;
+}
+
+/* Dark mode - Marker button */
+body.dark-mode .marker-btn {
+    background: #1a1a2e;
+    border: 1px solid #0ff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+body.dark-mode .marker-btn svg circle {
+    fill: #0ff;
+}
+
+/* Dark mode - Marker panel */
+body.dark-mode .marker-panel {
+    background: #0a0a15;
+    color: #0ff;
+    border: 1px solid #0ff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+body.dark-mode .marker-panel label {
+    color: #0ff;
+}
+
+/* Dark mode - Locate button */
+body.dark-mode .locate-btn {
+    background: #1a1a2e;
+    border: 1px solid #0ff;
+    color: #0ff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* Dark mode - Theme button */
+body.dark-mode .theme-btn {
+    background: #1a1a2e;
+    border: 1px solid #0ff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+body.dark-mode .theme-btn svg path {
+    fill: #0ff;
+}
+
+/* Dark mode - Search button with visible icon */
+body.dark-mode .search-btn {
+    background: #1a1a2e;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%2300ffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+    background-size: 22px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #0ff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* Dark mode - Search panel */
+body.dark-mode .search-panel {
+    background: #0a0a15;
+    border: 1px solid #0ff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+body.dark-mode .search-panel-header {
+    color: #0ff;
+}
+
+body.dark-mode #closeSearchPanel {
+    background: #1a1a2e;
+    border: 1px solid #0ff;
+    color: #0ff;
+}
+
+body.dark-mode #searchInput {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #0ff;
+    color: #0ff;
+}
+
+body.dark-mode #searchInput::placeholder {
+    color: rgba(0, 255, 255, 0.6);
+}
+
+body.dark-mode #searchGoBtn {
+    background: #1a1a2e;
+    border: 1px solid #0ff;
+}
+
+body.dark-mode #searchGoBtn svg path {
+    stroke: #0ff;
+}
+
+body.dark-mode .search-item {
+    background: rgba(0, 255, 255, 0.1);
+    color: #0ff;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+body.dark-mode .search-item:hover {
+    background: rgba(0, 255, 255, 0.2);
+}
+
+/* Dark mode - Zoom controls */
+body.dark-mode .leaflet-control-zoom a {
+    background: #1a1a2e;
+    border: 1px solid #0ff;
+    color: #0ff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* Dark mode - Top bar buttons (Start Exploring, Achievement, Logout) */
+body.dark-mode #exploreBtn {
+    background: linear-gradient(135deg, #00897b, #00acc1);
+    border: 1px solid #0ff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    box-sizing: border-box;
+}
+
+body.dark-mode .achievement-title,
+body.dark-mode #title {
+    background: #1a1a2e;
+    border: 1px solid #0ff;
+    color: #0ff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    box-sizing: border-box;
+}
+
+body.dark-mode .logout-btn-top,
+body.dark-mode #top-bar .btn-primary {
+    background: #1a1a2e;
+    border: 1px solid #0ff;
+    color: #0ff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    box-sizing: border-box;
+}
+
+/* Dark mode - XP box */
+body.dark-mode #xp-box {
+    background: #1a1a2e;
+    border: 1px solid #0ff;
+    color: #0ff;
+    padding: 7px 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    box-sizing: border-box;
 }
 
 /* ================= THEME BUTTON ================= */

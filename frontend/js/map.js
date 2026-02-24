@@ -126,6 +126,7 @@ layerToggleControl.onAdd = () => {
     L.DomEvent.disableClickPropagation(button);
 
     button.onclick = () => {
+        closeAllPanels();
         document.getElementById("layerPanel")?.classList.toggle("show");
     };
 
@@ -603,6 +604,7 @@ markerControl.onAdd = () => {
     L.DomEvent.on(button, 'click', L.DomEvent.stopPropagation)
               .on(button, 'click', L.DomEvent.preventDefault)
               .on(button, 'click', () => {
+                  closeAllPanels();
                   const panel = document.getElementById("markerPanel");
                   panel.classList.toggle("show");
               });
@@ -641,7 +643,16 @@ searchControl.addTo(map);
 let clickMarker = null;
 let pathLine = null;
 
+// Function to close all panels
+function closeAllPanels() {
+    document.getElementById("layerPanel")?.classList.remove("show");
+    document.getElementById("markerPanel")?.classList.remove("show");
+    document.getElementById("searchPanel")?.classList.remove("show");
+}
+
+// Close panels when clicking on map
 map.on("click", async (e) => {
+    closeAllPanels();
 
     const { lat, lng } = e.latlng;
 
