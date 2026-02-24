@@ -443,5 +443,8 @@ body.dark-mode .search-item:hover {
     transform: translateY(-2px);
 }
 .marker-btn:active {
-    transform: scale(0.95);
+    transform: translateY(-2px) scale(0.95);
+}
+.marker-btn {
+    outline: none;
 }
