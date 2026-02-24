@@ -10,16 +10,28 @@ const dotIcon = L.divIcon({
     "></div>`
 });
 
-const manIcon = L.icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/236/236831.png",
-    iconSize: [32, 32],
-    iconAnchor: [16, 32]
+const manIcon = L.divIcon({
+    className: "avatar-icon",
+    html: `
+        <div class="avatar-wrapper">
+            <img src="../../assets/icons/man.png">
+        </div>
+    `,
+    iconSize: [48, 48],
+    iconAnchor: [24, 48],
+    popupAnchor: [0, -48]
 });
 
-const womanIcon = L.icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/236/236832.png",
-    iconSize: [32, 32],
-    iconAnchor: [16, 32]
+const womanIcon = L.divIcon({
+    className: "avatar-icon",
+    html: `
+        <div class="avatar-wrapper">
+            <img src="../../assets/icons/woman.png">
+        </div>
+    `,
+    iconSize: [48, 48],
+    iconAnchor: [24, 48],
+    popupAnchor: [0, -48]
 });
 
 // ================= MAP INIT =================
@@ -145,9 +157,7 @@ const markerRadios = document.querySelectorAll('input[name="markerType"]');
 
 markerRadios.forEach(radio => {
     radio.addEventListener("change", () => {
-
         localStorage.setItem("markerType", radio.value);
-
         updateUserMarker();
     });
 });
