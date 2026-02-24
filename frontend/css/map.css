@@ -463,7 +463,7 @@ body.dark-mode .search-item:hover {
     height: 48px;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid white;
+    border: 3px solid #1d6fdc;
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
