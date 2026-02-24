@@ -23,6 +23,10 @@ const railwayLayer = L.tileLayer(
         crossOrigin: true
     }
 );
+const darkLayer = L.tileLayer(
+    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    { attribution: '&copy; CartoDB' }
+);
 
 const satelliteLayer = L.tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -52,6 +56,30 @@ threeDLayer.on('remove', () => {
         buildingsLayer = null;
     }
 });
+
+// ================= THEME CONTROL =================
+const themeControl = L.control({ position: 'bottomright' });
+
+themeControl.onAdd = () => {
+
+    const button = L.DomUtil.create('button', 'theme-btn');
+
+    button.innerHTML = `
+        <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="white">
+            <path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/>
+        </svg>
+    `;
+
+    L.DomEvent.disableClickPropagation(button);
+
+    button.onclick = () => {
+        toggleTheme();
+    };
+
+    return button;
+};
+
+themeControl.addTo(map);
 
 // ================= LAYER BUTTON =================
 const layerToggleControl = L.control({ position: 'bottomright' });
@@ -89,6 +117,30 @@ document.addEventListener("DOMContentLoaded", function initLayerPanel() {
     });
 });
 
+// ================= THEME SYSTEM =================
+
+function applyDarkMode() {
+    document.body.classList.add("dark-mode");
+    if (map.hasLayer(roadsLayer)) map.removeLayer(roadsLayer);
+    if (!map.hasLayer(darkLayer)) darkLayer.addTo(map);
+    localStorage.setItem("theme", "dark");
+}
+
+function applyLightMode() {
+    document.body.classList.remove("dark-mode");
+    if (map.hasLayer(darkLayer)) map.removeLayer(darkLayer);
+    if (!map.hasLayer(roadsLayer)) roadsLayer.addTo(map);
+    localStorage.setItem("theme", "light");
+}
+
+function toggleTheme() {
+    if (document.body.classList.contains("dark-mode")) {
+        applyLightMode();
+    } else {
+        applyDarkMode();
+    }
+}
+
 // ================= LAYER LOGIC =================
 function setBaseLayer(type) {
     map.removeLayer(roadsLayer);
@@ -96,6 +148,10 @@ function setBaseLayer(type) {
 
     if (type === "roads") roadsLayer.addTo(map);
     if (type === "satellite") satelliteLayer.addTo(map);
+}
+// Restore saved theme
+if (localStorage.getItem("theme") === "dark") {
+    applyDarkMode();
 }
 
 function toggleOverlay(type) {
@@ -409,6 +465,7 @@ locateControl.onAdd = () => {
 };
 
 locateControl.addTo(map);
+
 
 // ================= SEARCH BUTTON =================
 const searchControl = L.control({ position: 'topleft' });

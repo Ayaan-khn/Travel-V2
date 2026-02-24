@@ -4,6 +4,7 @@ body {
     height: 100vh;
     overflow: hidden;
     display: block;
+    transition: background 0.3s ease;
 }
 
 /* ================= MAP CONTAINER ================= */
@@ -356,4 +357,46 @@ body {
 
 #searchGoBtn:hover {
     transform: translateX(2px);
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark-mode {
+    background: #121212;
+}
+
+body.dark-mode #top-bar {
+    background: rgba(20,20,25,0.85);
+}
+
+body.dark-mode .search-panel {
+    background: rgba(15,15,20,0.95);
+}
+
+body.dark-mode .search-item {
+    background: rgba(255,255,255,0.05);
+}
+
+body.dark-mode .search-item:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+/* ================= THEME BUTTON ================= */
+
+.theme-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    background: var(--primary);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+}
+
+.theme-btn:hover {
+    transform: translateY(-2px);
 }
