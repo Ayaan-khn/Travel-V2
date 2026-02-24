@@ -303,6 +303,26 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
+// simple heuristic for "best season" based on hemisphere and current month
+function getBestSeason(lat) {
+    const month = new Date().getMonth() + 1; // 1-12
+    const north = lat >= 0;
+    let season = "";
+    if (north) {
+        if (month >= 3 && month <= 5) season = "Spring";
+        else if (month >= 6 && month <= 8) season = "Summer";
+        else if (month >= 9 && month <= 11) season = "Autumn";
+        else season = "Winter";
+    } else {
+        // southern hemisphere seasons are opposite
+        if (month >= 3 && month <= 5) season = "Autumn";
+        else if (month >= 6 && month <= 8) season = "Winter";
+        else if (month >= 9 && month <= 11) season = "Spring";
+        else season = "Summer";
+    }
+    return season;
+}
+
 function checkAndUnlockAchievements(progress) {
     const definitions = [
         { id: "first_loc", type: "location", count: 1 },
@@ -376,6 +396,43 @@ let userMarker = null;
 let userLat = null;
 let userLng = null;
 let geolocationWatchId = null;
+
+// flag used to know if the user has started exploring (geolocation active)
+let exploring = false;
+
+// custom icon for click marker (makes marker more prominent, app-like)
+const clickIcon = L.divIcon({
+    className: 'click-icon',
+    html: `<div class="click-circle"></div>`,
+    iconSize: [24,24],
+    iconAnchor: [12,12]
+});
+
+// helper: attempt to fetch thumbnail, extract and title from closest Wiki pages
+// returns object {title,image,description}
+async function fetchNearbyInfo(lat, lng) {
+    try {
+        const url = `https://en.wikipedia.org/w/api.php?action=query&generator=geosearch&ggscoord=${lat}|${lng}&ggsradius=20000&ggslimit=10&prop=pageimages|extracts&exintro&explaintext&piprop=thumbnail&pithumbsize=400&format=json&origin=*`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.query && data.query.pages) {
+            // generator returns pages sorted by distance, so first hit is nearest
+            for (const id in data.query.pages) {
+                const pg = data.query.pages[id];
+                if (pg.extract || (pg.thumbnail && pg.thumbnail.source)) {
+                    return {
+                        title: pg.title || '',
+                        image: pg.thumbnail?.source || '',
+                        description: pg.extract || ''
+                    };
+                }
+            }
+        }
+    } catch (e) {
+        console.warn('nearest info fetch failed', e);
+    }
+    return { title: '', image: '', description: '' };
+}
 
 function showExploreNotification() {
 
@@ -588,65 +645,135 @@ map.on("click", async (e) => {
 
     const { lat, lng } = e.latlng;
 
-    if (!clickMarker) clickMarker = L.marker([lat, lng]).addTo(map);
-    else clickMarker.setLatLng([lat, lng]);
+    if (!clickMarker) {
+        clickMarker = L.marker([lat, lng], { icon: clickIcon }).addTo(map);
+        clickMarker._icon.classList.add('bounce');
+        setTimeout(() => clickMarker?._icon?.classList.remove('bounce'), 800);
+    } else {
+        clickMarker.setLatLng([lat, lng]);
+    }
 
     clickMarker.bindPopup("Loading...").openPopup();
 
     try {
-        const geoRes = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
-        );
-        const geoData = await geoRes.json();
+        let locationName = "Unknown Location";
+        let geoData = {};
+        try {
+            const geoRes = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+            );
+            geoData = await geoRes.json();
+            locationName =
+                geoData.address?.city ||
+                geoData.address?.town ||
+                geoData.address?.village ||
+                geoData.address?.state ||
+                geoData.address?.country ||
+                locationName;
+        } catch (e) {
+            console.warn('reverse geocode failed', e);
+        }
 
-        const locationName =
-            geoData.address?.city ||
-            geoData.address?.town ||
-            geoData.address?.village ||
-            geoData.address?.state ||
-            geoData.address?.country ||
-            "Unknown Location";
+        let temperature = "N/A";
+        let localTime = "N/A";
+        try {
+            const weatherRes = await fetch(
+                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true&timezone=auto`
+            );
+            const weatherData = await weatherRes.json();
+            temperature = weatherData.current_weather?.temperature ?? temperature;
+            localTime = weatherData.current_weather?.time ?? localTime;
+        } catch (e) {
+            console.warn('weather fetch failed', e);
+        }
 
-        const weatherRes = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true&timezone=auto`
-        );
-        const weatherData = await weatherRes.json();
-
-        const temperature = weatherData.current_weather?.temperature ?? "N/A";
-        const localTime = weatherData.current_weather?.time ?? "N/A";
-
-        let imageUrl = "";
+        let description = "";
+        let fallbackTitle = "";
         try {
             const wikiRes = await fetch(
                 `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(locationName)}`
             );
             const wikiData = await wikiRes.json();
-            imageUrl = wikiData.thumbnail?.source || "";
-        } catch {}
+            description = wikiData.extract || "";
+        } catch (e) {
+            console.warn('wiki summary failed', e);
+        }
 
-        if (!imageUrl) imageUrl = "https://picsum.photos/400/250";
+        if (!description) {
+            try {
+                const nearby = await fetchNearbyInfo(lat, lng);
+                if (nearby.title) fallbackTitle = nearby.title;
+                if (!description) description = nearby.description;
+            } catch (e) {
+                console.warn('nearby info fetch failed', e);
+            }
+        }
 
-        if (userLat && userLng) {
+        if (!description) description = "No additional information available.";
+
+        function splitDesc(d) {
+            const idx = d.indexOf('.');
+            if (idx === -1) return { geography: d, history: 'No history available.' };
+            const geo = d.slice(0, idx+1);
+            let hist = d.slice(idx+1).trim();
+            if (hist.length > 120) hist = hist.slice(0, 117) + '...';
+            return { geography: geo, history: hist || 'No history available.' };
+        }
+        const { geography, history } = splitDesc(description);
+
+        // retain line drawing but no distance text shown
+        if (exploring && userLat != null && userLng != null) {
+            const dist = haversineDistance(userLat, userLng, lat, lng);
             if (pathLine) pathLine.remove();
             pathLine = L.polyline(
                 [[userLat, userLng], [lat, lng]],
-                { color: '#1d6fdc', weight: 2, dashArray: '6,6' }
+                { color: '#ff7800', weight: 4, dashArray: '10,8' }
             ).addTo(map);
         }
 
+        const season = getBestSeason(lat);
 
+        let displayName = locationName;
+        if (fallbackTitle) {
+            displayName = `Nearest info: ${fallbackTitle}`;
+        }
+
+        const countryLangMap = {
+            India: 'Hindi',
+            France: 'French',
+            Spain: 'Spanish',
+            Germany: 'German',
+            China: 'Mandarin',
+            Japan: 'Japanese',
+            USA: 'English',
+            'United States': 'English'
+        };
+        let language = 'Unknown';
+        const country = geoData.address?.country;
+        if (country && countryLangMap[country]) language = countryLangMap[country];
 
         clickMarker.setPopupContent(`
             <div class="map-popup">
-                <b>${locationName}</b><br><br>
-                <img src="${imageUrl}" style="width:100%;border-radius:8px;margin-bottom:8px;">
+                <div class="popup-header"><b>${displayName}</b></div>
+                <div><strong>Best season:</strong> ${season}</div>
+                <div class="section-title">Geography</div>
+                <div>${geography}</div>
+                <div class="section-title">History</div>
+                <div>${history}</div>
                 <div><strong>Temperature:</strong> ${temperature} °C</div>
                 <div><strong>Local Time:</strong> ${localTime}</div>
+                <div><strong>Language:</strong> ${language}</div>
             </div>
         `);
 
-    } catch {
-        clickMarker.setPopupContent("Failed to load data.");
+    } catch (err) {
+        console.warn('popup build error', err);
+        clickMarker.setPopupContent(`
+            <div class="map-popup">
+                <div class="popup-header"><b>Information Unavailable</b></div>
+                <div>No data could be retrieved for this location.</div>
+            </div>
+        `);
     }
 });
 
@@ -664,7 +791,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Explore button - starts geolocation (one permission request) and zooms to user
  const exploreBtn = document.getElementById("exploreBtn");
 
-let exploring = false;
+// `exploring` is a global flag declared earlier
 
 if (exploreBtn) {
 
@@ -692,6 +819,11 @@ if (exploreBtn) {
       }
 
       exploring = false;
+      // remove any existing path line
+      if (pathLine) {
+          map.removeLayer(pathLine);
+          pathLine = null;
+      }
 
       exploreBtn.classList.remove("active");
       exploreBtn.textContent = "Start Exploring";
@@ -702,6 +834,7 @@ if (exploreBtn) {
 }  // Set XP
     const xpEl = document.getElementById("xp-value");
     if (xpEl) xpEl.textContent = currentUser.xp || 0;
+
 
     // Set Profile Picture (use pfp to match register/profile)
     const pfp = document.getElementById("topPfp");

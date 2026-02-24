@@ -39,5 +39,6 @@ function requireAuth() {
 
 function logout() {
     localStorage.removeItem("loggedInUser");
-    window.location.href = "login.html";
+    // send back to main page after logout
+    window.location.href = "mainpage.html";
 }

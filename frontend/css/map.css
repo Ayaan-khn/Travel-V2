@@ -20,19 +20,23 @@ body {
 
 #top-bar {
     position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 85%;
-    padding: 15px 30px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 12px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255,255,255,0.25);
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    z-index: 5000;
+    background: var(--bg-gradient);
     color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    z-index: 5000;
+}
+
+@media (max-width: 500px) {
+    #top-bar { flex-wrap: wrap; gap:8px; padding:10px; }
+    #top-bar .left-section { gap:6px; }
+    #top-bar .btn, #top-bar .btn-primary { padding:8px 14px; font-size:14px; }
 }
 
 /* Left Section */
@@ -123,9 +127,93 @@ body {
 /* ================= LEAFLET POPUP ================= */
 
 .leaflet-popup-content-wrapper {
+    border:none;
     border-radius: 12px;
     animation: popupFadeScale 0.3s ease forwards;
+    margin-top: 60px;
 }
+
+.leaflet-popup-tip {
+    margin-top: 60px;
+}
+
+/* custom popup content used by click handler */
+.map-popup {
+    /* responsive width: at most 90% of viewport, but never wider than 280px */
+    width: auto;
+    max-width: 90vw;
+    min-width: 200px;
+    word-wrap: break-word;
+    color: #0ff;
+    background: #111;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 0 12px #0ff, 0 0 24px rgba(0,255,255,0.4);
+    font-family: 'Courier New', Courier, monospace;
+    border: 2px solid #0ff;
+}
+
+/* smaller screens: reduce padding and header font */
+@media (max-width: 400px) {
+    .map-popup { padding: 8px; }
+    .map-popup .popup-header { font-size: 14px; padding: 6px 10px; }
+    .map-popup .section-title { font-size: 12px; }
+}
+
+/* popup header and sections */
+.map-popup .popup-header {
+    background: #000;
+    color: #0ff;
+    padding: 6px 10px;
+    border-radius: 6px 6px 0 0;
+    text-align: center;
+    font-size: 14px;
+    border-bottom: 1px solid #0ff;
+}
+.map-popup .section-title {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 12px;
+    color: #0ff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* click marker custom icon */
+.click-icon .click-circle {
+    width: 16px;
+    height: 16px;
+    background: #ff7800;
+    border: 3px solid white;
+    border-radius: 50%;
+}
+
+/* hide default attribution for cleaner app look */
+.leaflet-control-attribution { display: none !important; }
+
+/* enlarge zoom buttons and reposition for touch friendliness */
+.leaflet-control-zoom a {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 24px;
+    background: rgba(0,0,0,0.4);
+    color: white;
+    border-radius: 6px;
+}
+.leaflet-control-zoom { bottom: 80px !important; right: 10px !important; }
+
+/* bounce animation for markers */
+@keyframes bounceAnim {
+    0%,20%,50%,80%,100% { transform: translateY(0); }
+    40% { transform: translateY(-12px); }
+    60% { transform: translateY(-6px); }
+}
+.bounce {
+    animation: bounceAnim 0.8s;
+}
+
+/* adjust polyline appearance (already updated via JS style) */
 
 @keyframes popupFadeScale {
     from { opacity: 0; transform: scale(0.8); }
