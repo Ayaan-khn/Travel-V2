@@ -400,3 +400,48 @@ body.dark-mode .search-item:hover {
 .theme-btn:hover {
     transform: translateY(-2px);
 }
+
+/*MAN WOMEN AND DOT*/
+
+.marker-panel {
+    position: fixed;
+    bottom: 180px;
+    right: 30px;
+    background: white;
+    color: var(--primary);
+    padding: 15px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    display: none;
+    z-index: 6000;
+    width: 160px;
+}
+
+.marker-panel.show {
+    display: block;
+}
+
+/* ================= MARKER BUTTON ================= */
+
+.marker-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    box-shadow:
+        0 6px 18px rgba(0,0,0,0.35),
+        inset 0 1px 4px rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+}
+
+.marker-btn:hover {
+    transform: translateY(-2px);
+}
+.marker-btn:active {
+    transform: scale(0.95);
+}

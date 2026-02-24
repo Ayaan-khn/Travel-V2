@@ -1,3 +1,27 @@
+// MAN WOMEN DOT
+const dotIcon = L.divIcon({
+    className: "user-dot",
+    html: `<div style="
+        width:14px;
+        height:14px;
+        background:#1d6fdc;
+        border-radius:50%;
+        border:2px solid white;
+    "></div>`
+});
+
+const manIcon = L.icon({
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/236/236831.png",
+    iconSize: [32, 32],
+    iconAnchor: [16, 32]
+});
+
+const womanIcon = L.icon({
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/236/236832.png",
+    iconSize: [32, 32],
+    iconAnchor: [16, 32]
+});
+
 // ================= MAP INIT =================
 const map = L.map('map', {
     worldCopyJump: true,
@@ -117,6 +141,27 @@ document.addEventListener("DOMContentLoaded", function initLayerPanel() {
     });
 });
 
+const markerRadios = document.querySelectorAll('input[name="markerType"]');
+
+markerRadios.forEach(radio => {
+    radio.addEventListener("change", () => {
+
+        localStorage.setItem("markerType", radio.value);
+
+        updateUserMarker();
+    });
+});
+
+function updateUserMarker() {
+
+    const type = localStorage.getItem("markerType") || "dot";
+
+    if (!userMarker) return;
+
+    if (type === "dot") userMarker.setIcon(dotIcon);
+    if (type === "man") userMarker.setIcon(manIcon);
+    if (type === "woman") userMarker.setIcon(womanIcon);
+}
 // ================= THEME SYSTEM =================
 
 function applyDarkMode() {
@@ -405,7 +450,11 @@ if (!progress.visitedCells[cellKey]) {
     userLng = longitude;
 
     if (!userMarker) {
-        userMarker = L.marker([latitude, longitude]).addTo(map);
+        userMarker = L.marker([latitude, longitude], {
+    icon: dotIcon
+}).addTo(map);
+
+updateUserMarker();
         map.setView([latitude, longitude], 14);
     } else {
         userMarker.setLatLng([latitude, longitude]);
@@ -446,26 +495,55 @@ function startGeolocation(zoomOnFirstFix) {
 }
 
 // ================= LOCATE BUTTON =================
+
 const locateControl = L.control({ position: 'bottomright' });
 
 locateControl.onAdd = () => {
     const button = L.DomUtil.create('button', 'locate-btn');
     button.innerHTML = "ME";
 
-    button.onclick = e => {
-        e.preventDefault();
-        if (userLat != null && userLng != null) {
-            map.setView([userLat, userLng], 14);
-        } else {
-            startGeolocation(true);
-        }
-    };
+    L.DomEvent.disableClickPropagation(button);
+
+    L.DomEvent.on(button, 'click', L.DomEvent.stopPropagation)
+              .on(button, 'click', L.DomEvent.preventDefault)
+              .on(button, 'click', () => {
+
+                  if (userLat != null && userLng != null) {
+                      map.setView([userLat, userLng], 14);
+                  } else {
+                      startGeolocation(true);
+                  }
+
+              });
 
     return button;
 };
 
 locateControl.addTo(map);
 
+const markerControl = L.control({ position: 'bottomright' });
+
+markerControl.onAdd = () => {
+    const button = L.DomUtil.create('button', 'marker-btn');
+    button.innerHTML = `
+<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+  <circle cx="12" cy="12" r="5"/>
+</svg>
+`;
+
+    L.DomEvent.disableClickPropagation(button);
+
+    L.DomEvent.on(button, 'click', L.DomEvent.stopPropagation)
+              .on(button, 'click', L.DomEvent.preventDefault)
+              .on(button, 'click', () => {
+                  const panel = document.getElementById("markerPanel");
+                  panel.classList.toggle("show");
+              });
+
+    return button;
+};
+
+markerControl.addTo(map);
 
 // ================= SEARCH BUTTON =================
 const searchControl = L.control({ position: 'topleft' });
