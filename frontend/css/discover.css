@@ -1,0 +1,292 @@
+/* ================= DISCOVER PAGE STYLES ================= */
+
+/* Toast Notification */
+.toast-notification {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(0,0,0,0.85);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 10000;
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    max-width: 90%;
+    text-align: center;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Experience Card Specific */
+.experience-card .experience-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.experience-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 6px;
+}
+
+.experience-category {
+    display: inline-block;
+    font-size: 11px;
+    background: rgba(255,255,255,0.2);
+    padding: 4px 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.experience-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.experience-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    opacity: 0.85;
+    background: rgba(255,255,255,0.1);
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+.participant-count {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    background: linear-gradient(135deg, var(--primary), #00d2ff);
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.participant-count.full {
+    background: linear-gradient(135deg, #ff9800, #ffb74d);
+}
+
+/* Picture Card */
+.picture-card .picture-image {
+    width: 100%;
+    border-radius: 14px;
+    margin-bottom: 12px;
+}
+
+.picture-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.icon-action {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px;
+    transition: transform 0.2s;
+}
+
+.icon-action:hover {
+    transform: scale(1.2);
+}
+
+.picture-likes {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.picture-caption {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.picture-comments {
+    font-size: 13px;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.picture-comments:hover {
+    opacity: 1;
+}
+
+/* Trip Plan Card Specific */
+.trip-plan-card .destination {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.trip-dates {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+
+.trip-purpose {
+    display: inline-block;
+    font-size: 12px;
+    background: rgba(255,255,255,0.2);
+    padding: 5px 12px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.open-to-join {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+.open-to-join.yes {
+    background: linear-gradient(135deg, #4caf50, #81c784);
+    color: white;
+}
+
+.open-to-join.no {
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    opacity: 0.8;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.empty-state-text {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.empty-state-card {
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+}
+
+.empty-state-card h3 {
+    margin-bottom: 8px;
+}
+
+.empty-state-card p {
+    opacity: 0.8;
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255,255,255,0.2);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Pull to refresh indicator */
+.pull-refresh {
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    opacity: 0.7;
+    display: none;
+}
+
+.pull-refresh.active {
+    display: block;
+}
+
+/* Scrollbar styling */
+.feed-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.feed-container::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+}
+
+.feed-container::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+}
+
+.feed-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* Floating Action Button */
+.fab-btn {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    font-size: 32px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(29, 111, 220, 0.5);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fab-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(29, 111, 220, 0.6);
+}

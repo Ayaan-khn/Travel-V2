@@ -1,14 +1,15 @@
 // ================= REGISTER =================
-function initRegister() {
+async function initRegister() {
     const form = document.getElementById("registerForm");
     if (!form) return;
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
         const username = document.getElementById("regUsername").value.trim();
         const email = document.getElementById("regEmail").value.trim();
         const password = document.getElementById("regPassword").value.trim();
+        const name = username; // Use username as name
 
         if (username.length < 3) {
             alert("Username must be at least 3 characters.");
@@ -20,28 +21,32 @@ function initRegister() {
             return;
         }
 
-        const users = getUsers();
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = "Creating account...";
+        submitBtn.disabled = true;
 
-        if (users.find(user => user.email === email)) {
-            alert("User already exists.");
-            return;
+        try {
+            // Try API register first
+            const result = await registerAPI(email, username, password, name);
+            
+            if (result.success) {
+                window.location.href = "discover.html";
+            }
+        } catch (error) {
+            // Fallback to localStorage
+            try {
+                const result = registerLocal(email, username, password, name);
+                if (result.success) {
+                    window.location.href = "discover.html";
+                }
+            } catch (err) {
+                alert(err.message || "Registration failed. Please try again.");
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         }
-
-        const newUser = {
-            username,
-            email,
-            password,
-            xp: 0,
-            bio: "",
-            pfp: "",
-            banner: ""
-        };
-
-        users.push(newUser);
-        saveUsers(users);
-
-        alert("Account created successfully.");
-        window.location.href = "login.html";
     });
 }
 

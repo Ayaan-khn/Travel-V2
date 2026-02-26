@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legends - TravelSync</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/discover.css">
+    <style>
+        /* Legend Detail Modal */
+        .legend-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(8px);
+        }
+
+        .legend-modal.show {
+            display: flex;
+        }
+
+        .legend-modal-content {
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 40px rgba(29,111,220,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .legend-modal-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .legend-modal-body {
+            padding: 24px;
+        }
+
+        .legend-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .legend-modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+
+        .legend-modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .legend-modal-close:hover {
+            background: rgba(255,80,80,0.5);
+            transform: rotate(90deg);
+        }
+
+        .legend-modal-location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 16px;
+        }
+
+        .legend-modal-content-text {
+            font-size: 15px;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 20px;
+        }
+
+        .legend-modal-section {
+            margin-bottom: 16px;
+        }
+
+        .legend-modal-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .legend-modal-facts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .legend-fact-tag {
+            font-size: 12px;
+            background: rgba(255,255,255,0.1);
+            padding: 6px 12px;
+            border-radius: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .legend-modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .legend-modal-actions .btn {
+            flex: 1;
+        }
+
+        /* Search Results */
+        .search-container {
+            padding: 0 20px 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 16px;
+            border: none;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .search-input:focus {
+            background: rgba(255,255,255,0.25);
+            box-shadow: 0 0 20px rgba(29,111,220,0.3);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="brand-title">Legends</h1>
+            </div>
+            <div class="top-bar-right">
+                <button class="icon-btn" onclick="toggleSearch()">🔍</button>
+            </div>
+        </div>
+
+        <!-- Search Container (Hidden by default) -->
+        <div class="search-container" id="searchContainer" style="display: none;">
+            <input type="text" class="search-input" id="searchInput" 
+                   placeholder="Search legends by name or location..." 
+                   oninput="searchLegends(this.value)">
+        </div>
+
+        <!-- Tab Switcher -->
+        <div class="tab-switcher">
+            <button class="tab-btn active" onclick="filterLegends('all')">All</button>
+            <button class="tab-btn" onclick="filterLegends('mystical')">Mystical</button>
+            <button class="tab-btn" onclick="filterLegends('haunted')">Haunted</button>
+            <button class="tab-btn" onclick="filterLegends('peaceful')">Peaceful</button>
+            <button class="tab-btn" onclick="filterLegends('adventurous')">Adventurous</button>
+        </div>
+
+        <!-- Legends Content -->
+        <div class="feed-container" id="legendsContainer">
+            <!-- Legends will be rendered here by JavaScript -->
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="discover.html" class="nav-item">
+                <span class="nav-icon">🌟</span>
+                <span>Discover</span>
+            </a>
+            <a href="plans.html" class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span>Plans</span>
+            </a>
+            <a href="messages.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span>Messages</span>
+            </a>
+            <a href="legends.html" class="nav-item active">
+                <span class="nav-icon">📜</span>
+                <span>Legends</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Legend Detail Modal -->
+    <div class="legend-modal" id="legendModal">
+        <div class="legend-modal-content">
+            <img src="" alt="" class="legend-modal-image" id="modalImage">
+            <div class="legend-modal-body">
+                <div class="legend-modal-header">
+                    <h2 class="legend-modal-title" id="modalTitle"></h2>
+                    <button class="legend-modal-close" onclick="closeLegendModal()">×</button>
+                </div>
+                <div class="legend-modal-location" id="modalLocation">
+                    📍 <span></span>
+                </div>
+                <span class="legend-mood" id="modalMood"></span>
+                <p class="legend-modal-content-text" id="modalContent"></p>
+                
+                <div class="legend-modal-section">
+                    <div class="legend-modal-section-title">Key Facts</div>
+                    <div class="legend-modal-facts" id="modalFacts"></div>
+                </div>
+                
+                <div class="legend-modal-section">
+                    <div class="legend-modal-section-title">Local Stories</div>
+                    <p class="legend-modal-content-text" id="modalStories"></p>
+                </div>
+                
+                <div class="legend-modal-actions">
+                    <button class="btn btn-primary" onclick="saveLegend()">💾 Save Legend</button>
+                    <button class="btn btn-secondary" onclick="shareLegend()">📤 Share</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/legends.js"></script>
+</body>
+</html>

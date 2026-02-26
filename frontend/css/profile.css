@@ -29,13 +29,28 @@
 .profile-container {
     width: 100%;
     max-width: 480px;
+    min-height: calc(100vh - 120px);
     background: rgba(255,255,255,0.15);
     backdrop-filter: blur(20px);
-    border-radius: 28px;
+    border-radius: 28px 28px 0 0;
     box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1);
-    overflow: hidden;
     text-align: center;
-    padding-bottom: 36px;
+    padding-bottom: 120px;
+    margin: 0 auto;
+    overflow-y: auto;
+}
+
+.profile-container::-webkit-scrollbar {
+    width: 5px;
+}
+
+.profile-container::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1);
+}
+
+.profile-container::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 3px;
 }
 
 /* ================= BANNER ================= */
@@ -62,6 +77,23 @@
     display: inline-block;
 }
 
+/* ================= PROFILE PFP SECTION (Container for pfp + actions) ================= */
+
+.username-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+/* ================= PFP ACTIONS (Three dots menu - separate from profile pic) ================= */
+
+.pfp-actions {
+    position: relative;
+    margin-top: 60px;
+}
+
 /* ================= PROFILE IMAGE ================= */
 
 .profile-pfp {
@@ -72,6 +104,89 @@
     object-fit: cover;
     background: white;
     box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+/* ================= THREE DOT BUTTON ================= */
+
+.pfp-menu-btn {
+    position: absolute;
+    bottom: 6px;
+    right: -10px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(29,111,220,0.5);
+    transition: all 0.2s ease;
+    border: 3px solid white;
+}
+
+.pfp-menu-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(29,111,220,0.6);
+}
+
+/* ================= DROPDOWN MENU ================= */
+
+.pfp-menu {
+    position: absolute;
+    top: 45px;
+    right: -10px;
+    width: 200px;
+    background: rgba(30,30,30,0.95);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    padding: 8px;
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    pointer-events: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    z-index: 9999;
+}
+
+.pfp-menu.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.menu-close {
+    text-align: right;
+    font-size: 18px;
+    cursor: pointer;
+    margin-bottom: 4px;
+    color: #999;
+    padding: 4px 8px;
+}
+
+.menu-close:hover {
+    color: white;
+}
+
+.pfp-menu div {
+    padding: 12px 14px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pfp-menu div:hover {
+    background: linear-gradient(135deg, var(--primary), #00d2ff);
+    transform: translateX(4px);
 }
 
 /* ================= USERNAME & BIO ================= */
@@ -89,8 +204,6 @@
     opacity: 0.9;
     padding: 0 24px;
     line-height: 1.5;
-    max-height: 60px;
-    overflow-y: auto;
 }
 
 /* ================= STATS GRID ================= */
@@ -117,10 +230,6 @@
 .stat-card:hover {
     transform: translateY(-2px);
     background: rgba(255,255,255,0.25);
-}
-
-.stat-card-xp {
-    background: linear-gradient(135deg, rgba(29,111,220,0.5), rgba(0,210,255,0.3));
 }
 
 .stat-label {
@@ -184,90 +293,426 @@
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-.achievements-icon {
-    font-size: 20px;
+/* ================= NAV BAR LAYOUT ================= */
+
+.profile-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
 }
 
+.profile-nav .nav-link,
+.profile-nav .logout-btn {
+  background-color: rgba(255,255,255,0.2);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 600;
+}
 
-/* ================= THREE DOT BUTTON ================= */
+.profile-nav .nav-link:hover,
+.profile-nav .logout-btn:hover {
+   background: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
 
-.pfp-menu-btn {
-    position: absolute;
-    right: -5px;
-    bottom: 5px;
-    background: var(--primary);
-    color: white;
-    width: 36px;
-    height: 36px;
+.logout-btn:hover {
+  background-color: rgba(255,80,80,0.35);
+}
+
+/* ================= VERIFICATION BADGE ================= */
+
+.verification-badge {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #4caf50, #81c784);
     border-radius: 50%;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    font-size: 18px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    transition: all 0.2s ease;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    margin-left: 4px;
+    vertical-align: middle;
+    margin-top: 3px;
 }
 
-.pfp-menu-btn:hover {
-    transform: scale(1.08);
-    background: var(--primary-dark);
-}
+/* ================= PROFILE META ================= */
 
-/* ================= DROPDOWN MENU ================= */
-
-.pfp-menu {
-    position: absolute;
-    top: 50px;
-    right: 0;
-    background: white;
-    color: #333;
-    border-radius: 14px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-    display: none;
-    flex-direction: column;
-    padding: 8px;
-    min-width: 180px;
-    z-index: 9999;
-    border: 1px solid rgba(0,0,0,0.08);
-}
-
-.pfp-menu.show {
+.profile-meta {
     display: flex;
-}
-
-/* ================= MENU ITEMS ================= */
-
-.pfp-menu div {
-    padding: 10px 14px;
-    cursor: pointer;
-    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
     font-size: 14px;
-    transition: background 0.15s ease;
+    opacity: 0.9;
 }
 
-.pfp-menu div + div {
+.meta-separator {
+    opacity: 0.6;
+}
+
+/* ================= EDITABLE FIELDS ================= */
+
+.editable-field {
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.editable-field:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.section-header .section-title {
+    margin-bottom: 0;
+}
+
+.edit-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.editable-tag {
+    cursor: pointer;
+    opacity: 0.7;
+    border: 1px dashed rgba(255,255,255,0.5);
+}
+
+.editable-tag:hover {
+    opacity: 1;
+    border-style: solid;
+}
+
+/* ================= TRAVEL STATUS SELECTOR ================= */
+
+.travel-status-selector {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 16px 20px;
+    padding: 12px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 16px;
+}
+
+.status-option {
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    background: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.status-option:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.status-option.active {
+    background: linear-gradient(135deg, var(--primary), #00d2ff);
+    color: white;
+    box-shadow: 0 4px 12px rgba(29,111,220,0.4);
+}
+
+/* ================= PROFILE SECTIONS ================= */
+
+.profile-section {
+    margin: 20px;
+    padding: 16px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 16px;
+    text-align: left;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.section-item {
+    margin-bottom: 12px;
+}
+
+.item-label {
+    display: block;
+    font-size: 12px;
+    opacity: 0.7;
+    margin-bottom: 6px;
+}
+
+.languages-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.language-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    background: rgba(255,255,255,0.2);
+    padding: 5px 10px;
+    border-radius: 12px;
+}
+
+.interests-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.travel-style-tag {
+    display: inline-block;
+    font-size: 13px;
+    background: linear-gradient(135deg, var(--primary), #00d2ff);
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-weight: 600;
+}
+
+/* ================= TRAVEL STATS SECTION ================= */
+
+.travel-stats-section {
+    margin: 20px;
+    padding: 16px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 16px;
+}
+
+.travel-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.travel-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+}
+
+.stat-number {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+}
+
+.travel-stat .stat-label {
+    font-size: 10px;
+    opacity: 0.8;
     margin-top: 2px;
 }
 
-.pfp-menu div:hover {
-    background: #f0f4ff;
+/* ================= REVIEWS SECTION ================= */
+
+.reviews-section {
+    margin: 20px;
+    padding: 16px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 16px;
 }
 
-.menu-close {
-    text-align: right;
-    font-weight: bold;
+.trust-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.trust-badge {
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.2);
     cursor: pointer;
-    padding: 6px 10px;
-    color: #888;
-    font-size: 20px;
+    transition: 0.2s;
 }
 
-.menu-close:hover {
-    color: #dc1d1d;
+.trust-badge:hover {
+    background: rgba(255,255,255,0.3);
 }
 
-/* ================= BANNER CROP MODAL ================= */
+.trust-badge.verified {
+    background: linear-gradient(135deg, #4caf50, #81c784);
+}
+
+.rating-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.rating-stars {
+    font-size: 14px;
+}
+
+.rating-text {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.host-reviews {
+    margin-top: 12px;
+}
+
+.review-card {
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: left;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.reviewer-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.reviewer-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.reviewer-name {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.review-date {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.review-text {
+    font-size: 13px;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+/* ================= UPCOMING TRIPS SECTION ================= */
+
+.upcoming-trips-section {
+    margin: 20px;
+    padding: 16px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 16px;
+}
+
+.upcoming-trips-section .trip-card {
+    background: rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+    text-align: left;
+}
+
+.upcoming-trips-section .trip-card:last-child {
+    margin-bottom: 0;
+}
+
+.trip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.trip-info {
+    flex: 1;
+}
+
+.trip-destination {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.trip-dates {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+.trip-remove-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,80,80,0.3);
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trip-remove-btn:hover {
+    background: rgba(255,80,80,0.6);
+    transform: scale(1.1);
+}
+
+.trip-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-small {
+    padding: 8px 16px;
+    font-size: 12px;
+}
+
+/* ================= MODALS ================= */
 
 .crop-modal {
     display: none;
@@ -289,14 +734,15 @@
 }
 
 .crop-modal-content {
-    background: white;
-    border-radius: 20px;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 24px;
     max-width: 90vw;
-    max-height: 90vh;
+    max-height: 85vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+    box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 40px rgba(29,111,220,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .crop-modal-header {
@@ -324,14 +770,11 @@
     padding: 0;
 }
 
-.crop-modal-close:hover {
-    opacity: 0.8;
-}
-
 .crop-container {
     width: 100%;
     max-height: 60vh;
-    background: #000;
+    background: #f5f5f5;
+    padding: 20px;
 }
 
 .crop-container img {
@@ -369,129 +812,275 @@
 .crop-modal-footer .btn:hover {
     opacity: 0.9;
 }
-/* ================= PREMIUM PROFILE MENU ================= */
 
-.pfp-wrapper {
-    position: relative;
-    display: inline-block;
+/* ================= IMPROVED EDIT MODAL ================= */
+
+.edit-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(8px);
 }
 
-/* ⋮ button */
-.pfp-menu-btn {
-    position: absolute;
-    bottom: 6px;
-    right: 6px;
-    background: rgba(0,0,0,0.6);
+.edit-modal.show {
+    display: flex;
+}
+
+.edit-modal-content {
+    background: linear-gradient(145deg, rgba(30, 35, 50, 0.98), rgba(20, 25, 40, 0.98));
+    border-radius: 24px;
+    max-width: 380px;
+    width: 90vw;
+    overflow: hidden;
+    box-shadow: 
+        0 30px 60px rgba(0,0,0,0.5), 
+        0 0 50px rgba(29,111,220,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.08);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--primary), #00d2ff);
     color: white;
+}
+
+.edit-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.edit-modal-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    font-size: 18px;
-    backdrop-filter: blur(6px);
-    transition: 0.2s;
+    transition: all 0.2s;
+    line-height: 1;
 }
 
-.pfp-menu-btn:hover {
-    transform: scale(1.1);
+.edit-modal-close:hover {
+    background: rgba(255,255,255,0.35);
+    transform: rotate(90deg);
 }
 
-/* MENU PANEL */
-.pfp-menu {
-    position: absolute;
-    top: 40px;
-    right: -10px;
-    width: 200px;
+.edit-modal-body {
+    padding: 24px;
+}
 
-    background: rgba(20,20,20,0.85);
-    backdrop-filter: blur(12px);
-
+.edit-modal-input {
+    width: 100%;
+    padding: 16px 18px;
     border-radius: 14px;
-    padding: 10px;
-
-    opacity: 0;
-    transform: translateY(-10px) scale(0.95);
-    pointer-events: none;
-
-    transition: 0.25s ease;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-}
-
-/* SHOW STATE — already used by your JS */
-.pfp-menu.show {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    pointer-events: auto;
-}
-
-/* CLOSE BUTTON */
-.menu-close {
-    text-align: right;
-    font-size: 18px;
-    cursor: pointer;
-    margin-bottom: 6px;
-    color: #bbb;
-}
-
-.menu-close:hover {
+    border: 2px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
     color: white;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
 }
 
-/* MENU ITEMS */
-.pfp-menu div {
-    padding: 10px;
-    border-radius: 8px;
+.edit-modal-input:focus {
+    border-color: var(--primary);
+    background: rgba(29,111,220,0.1);
+    box-shadow: 0 0 25px rgba(29,111,220,0.25);
+}
+
+.edit-modal-input::placeholder {
+    color: rgba(255,255,255,0.4);
+}
+
+.edit-modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 16px 24px 24px;
+    justify-content: flex-end;
+}
+
+.edit-modal-footer .btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
     cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.edit-modal-footer .btn-primary {
+    background: linear-gradient(135deg, var(--primary), #00d2ff);
     color: white;
-    transition: 0.2s;
+    box-shadow: 0 4px 15px rgba(29,111,220,0.4);
 }
 
-.pfp-menu div:hover {
-    background: rgba(255,255,255,0.15);
-    transform: translateX(4px);
-}
-.profile-pfp {
-    border: 3px solid gold;
-    box-shadow: 0 0 12px rgba(255,215,0,0.6);
-}
-/* ================= NAV BAR LAYOUT ================= */
-
-.profile-nav {
-  display: flex;
-  justify-content: space-between; /* ← Map left, Logout right */
-  align-items: center;
-  padding: 10px 18px;
-}
-
-/* ================= MATCH BUTTON STYLE ================= */
-
-.profile-nav .nav-link,
-.profile-nav .logout-btn {
-  background-color: rgba(255,255,255,0.2);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.4);
-  padding: 10px 20px;
-  border-radius: 25px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  font-weight: 600;
-}
-
-/* Hover — same for both */
-.profile-nav .nav-link:hover,
-.profile-nav .logout-btn:hover {
-   background: rgba(255,255,255,0.3);
+.edit-modal-footer .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 20px rgba(29,111,220,0.5);
 }
 
-/* Optional — danger tint on logout hover */
-.logout-btn:hover {
-  background-color: rgba(255,80,80,0.35);
+.edit-modal-footer .btn-secondary {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.edit-modal-footer .btn-secondary:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* ================= IMPROVED SELECTION MODAL ================= */
+
+.selection-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+}
+
+.selection-modal.show {
+    display: flex;
+}
+
+.selection-modal-content {
+    background: linear-gradient(145deg, rgba(30, 35, 50, 0.98), rgba(20, 25, 40, 0.98));
+    border-radius: 24px;
+    max-width: 400px;
+    width: 90vw;
+    max-height: 70vh;
+    overflow: hidden;
+    box-shadow: 
+        0 30px 60px rgba(0,0,0,0.5), 
+        0 0 50px rgba(29,111,220,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.08);
+    animation: modalSlideIn 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.selection-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--primary), #00d2ff);
+    color: white;
+    flex-shrink: 0;
+}
+
+.selection-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.selection-modal-body {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1;
+    max-height: 400px;
+}
+
+.selection-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.selection-modal-body::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+}
+
+.selection-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+}
+
+.selection-option {
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.selection-option:last-child {
+    margin-bottom: 0;
+}
+
+.selection-option:hover {
+    background: linear-gradient(135deg, rgba(29,111,220,0.35), rgba(0,210,255,0.25));
+    border-color: rgba(29,111,220,0.5);
+    transform: translateX(6px);
+    box-shadow: 0 4px 15px rgba(29,111,220,0.25);
+}
+
+.selection-option:active {
+    transform: scale(0.98);
+}
+
+.selection-option-icon {
+    font-size: 20px;
+    width: 32px;
+    text-align: center;
+}
+
+.selection-option-text {
+    flex: 1;
+}
+
+.selection-option-check {
+    opacity: 0;
+    transition: opacity 0.2s;
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.selection-option:hover .selection-option-check {
+    opacity: 1;
 }

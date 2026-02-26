@@ -1,27 +1,40 @@
 // ================= LOGIN =================
-function initLogin() {
+async function initLogin() {
     const form = document.getElementById("loginForm");
     if (!form) return;
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value.trim();
+        
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = "Logging in...";
+        submitBtn.disabled = true;
 
-        const users = getUsers();
-
-        const validUser = users.find(
-            user => user.email === email && user.password === password
-        );
-
-        if (!validUser) {
-            alert("Invalid credentials.");
-            return;
+        try {
+            // Try API login first
+            const result = await loginAPI(email, password);
+            
+            if (result.success) {
+                window.location.href = "discover.html";
+            }
+        } catch (error) {
+            // Fallback to localStorage
+            try {
+                const result = loginLocal(email, password);
+                if (result.success) {
+                    window.location.href = "discover.html";
+                }
+            } catch (err) {
+                alert("Invalid credentials.");
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         }
-
-        setCurrentUser(validUser);
-        window.location.href = "map.html";
     });
 }
 
