@@ -37,11 +37,12 @@ function initRegister() {
             banner: ""
         };
 
-        users.push(newUser);
+users.push(newUser);
         saveUsers(users);
 
-        alert("Account created successfully.");
-        window.location.href = "login.html";
+        // Auto-login and redirect to discover
+        setCurrentUser(newUser);
+        window.location.href = "discover.html";
     });
 }
 

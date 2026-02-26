@@ -22,5 +22,11 @@
 </div>
 <script src="../js/common.js"></script>
 <script src="../js/mainpage.js"></script>
+<script>
+    // Auto-redirect to discover if already logged in
+    if (requireAuth()) {
+        window.location.href = 'discover.html';
+    }
+</script>
 </body>
 </html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legends - TravelSync</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/discover.css">
+</head>
+
+<body>
+    <div class="page-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="brand-title">Legends</h1>
+            </div>
+            <div class="top-bar-right">
+                <button class="icon-btn" onclick="searchLegends()">🔍</button>
+            </div>
+        </div>
+
+        <!-- Tab Switcher -->
+        <div class="tab-switcher">
+            <button class="tab-btn active">All</button>
+            <button class="tab-btn">Mystical</button>
+            <button class="tab-btn">Haunted</button>
+            <button class="tab-btn">Peaceful</button>
+            <button class="tab-btn">Adventurous</button>
+        </div>
+
+        <!-- Legends Content -->
+        <div class="feed-container" id="legendsContainer">
+            <div class="card legend-card">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400" 
+                     alt="Kashmir Valley" class="card-image">
+                <span class="legend-mood mystical">Mystical</span>
+                <h3 class="card-title">Kashmir Valley</h3>
+                <p class="legend-teaser">Ancient tales speak of a hidden kingdom beneath the frozen lakes, waiting for the worthy to discover its secrets...</p>
+                <div class="card-actions">
+                    <button class="btn btn-primary" onclick="readFullLegend(1)">📜 Read Legend</button>
+                </div>
+            </div>
+
+            <div class="card legend-card">
+                <img src="https://images.unsplash.com/photo-1506368083636-6defb67639a7?w=400" 
+                     alt="Aberdeen, Scotland" class="card-image">
+                <span class="legend-mood haunted">Haunted</span>
+                <h3 class="card-title">Aberdeen, Scotland</h3>
+                <p class="legend-teaser">The Greyfriars Kirkyard holds secrets that have terrified locals for centuries. Some say the Mackenzie Poltergeist is still searching...</p>
+                <div class="card-actions">
+                    <button class="btn btn-primary" onclick="readFullLegend(2)">📜 Read Legend</button>
+                </div>
+            </div>
+
+            <div class="card legend-card">
+                <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400" 
+                     alt="Kyoto, Japan" class="card-image">
+                <span class="legend-mood peaceful">Peaceful</span>
+                <h3 class="card-title">Kyoto, Japan</h3>
+                <p class="legend-teaser">In the bamboo groves of Arashiyama, monks have practiced meditation for over a thousand years, achieving enlightenment...</p>
+                <div class="card-actions">
+                    <button class="btn btn-primary" onclick="readFullLegend(3)">📜 Read Legend</button>
+                </div>
+            </div>
+
+            <div class="card legend-card">
+                <img src="https://images.unsplash.com/photo-1531761535209-180857e963b9?w=400" 
+                     alt="Patagonia, Chile" class="card-image">
+                <span class="legend-mood adventurous">Adventurous</span>
+                <h3 class="card-title">Patagonia, Chile</h3>
+                <p class="legend-teaser">Legend says the mountains themselves guide those brave enough to climb them to hidden treasures of the ancients...</p>
+                <div class="card-actions">
+                    <button class="btn btn-primary" onclick="readFullLegend(4)">📜 Read Legend</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="discover.html" class="nav-item">
+                <span class="nav-icon">🌟</span>
+                <span>Discover</span>
+            </a>
+            <a href="plans.html" class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span>Plans</span>
+            </a>
+            <a href="messages.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span>Messages</span>
+            </a>
+            <a href="legends.html" class="nav-item active">
+                <span class="nav-icon">📜</span>
+                <span>Legends</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script>
+        requireAuth();
+        
+        function searchLegends() {
+            alert('Search legends feature coming soon!');
+        }
+        
+        function readFullLegend(id) {
+            alert('Reading full legend #' + id + ' - Coming soon!');
+        }
+    </script>
+</body>
+</html>

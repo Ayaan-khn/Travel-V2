@@ -88,4 +88,369 @@ body.centered {
 .link-text:hover {
     opacity: 0.9;
 }
+
+/* ================= BOTTOM NAVIGATION ================= */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 8px 20px;
+    box-shadow: 0 -8px 30px rgba(0,0,0,0.15);
+    z-index: 9999;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #888;
+    font-size: 11px;
+    font-weight: 600;
+    gap: 4px;
+    transition: all 0.2s ease;
+    padding: 8px 12px;
+    border-radius: 16px;
+}
+
+.nav-item:hover {
+    color: var(--primary);
+    background: rgba(29,111,220,0.08);
+}
+
+.nav-item.active {
+    color: var(--primary);
+    background: rgba(29,111,220,0.12);
+}
+
+.nav-item .nav-icon {
+    font-size: 22px;
+    line-height: 1;
+}
+
+/* Page content wrapper with bottom nav padding */
+.page-content {
+    padding-bottom: 100px;
+    min-height: 100vh;
+}
+
+/* ================= TOP BAR ================= */
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+}
+
+.top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.top-bar .brand-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.location-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: white;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+}
+
+/* ================= TAB SWITCHER ================= */
+
+.tab-switcher {
+    display: flex;
+    gap: 8px;
+    padding: 12px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.tab-switcher::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.tab-btn.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+/* ================= CARDS ================= */
+
+.feed-container {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.card-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
+.card-user-info {
+    flex: 1;
+}
+
+.card-username {
+    font-weight: 600;
+    font-size: 15px;
+    color: white;
+}
+
+.card-meta {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
+.card-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.card-description {
+    font-size: 14px;
+    opacity: 0.9;
+    line-height: 1.5;
+    margin-bottom: 14px;
+}
+
+.card-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.card-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    opacity: 0.85;
+    background: rgba(255,255,255,0.1);
+    padding: 6px 12px;
+    border-radius: 10px;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.card-actions .btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 10px 16px;
+    font-size: 13px;
+}
+
+/* ================= PEOPLE CARD SPECIFIC ================= */
+
+.people-card .card-header {
+    margin-bottom: 10px;
+}
+
+.people-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.people-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+}
+
+.people-age {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.people-distance {
+    font-size: 13px;
+    opacity: 0.8;
+    background: rgba(255,255,255,0.1);
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+.people-languages {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.language-flag {
+    font-size: 20px;
+}
+
+.people-interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.interest-tag {
+    font-size: 12px;
+    background: rgba(255,255,255,0.2);
+    padding: 5px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.travel-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    background: linear-gradient(135deg, var(--primary), #00d2ff);
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+.people-bio {
+    font-size: 14px;
+    opacity: 0.9;
+    line-height: 1.5;
+    margin-bottom: 14px;
+    font-style: italic;
+}
+
+/* ================= LEGEND CARD SPECIFIC ================= */
+
+.legend-card .card-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 14px;
+    margin-bottom: 14px;
+}
+
+.legend-mood {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.legend-mood.mystical {
+    background: linear-gradient(135deg, #9c27b0, #e040fb);
+    color: white;
+}
+
+.legend-mood.haunted {
+    background: linear-gradient(135deg, #424242, #757575);
+    color: white;
+}
+
+.legend-mood.peaceful {
+    background: linear-gradient(135deg, #4caf50, #81c784);
+    color: white;
+}
+
+.legend-mood.adventurous {
+    background: linear-gradient(135deg, #ff5722, #ff8a65);
+    color: white;
+}
+
+.legend-teaser {
+    font-size: 14px;
+    opacity: 0.9;
+    line-height: 1.5;
+    margin-bottom: 14px;
+}
+
 /*Global file*/

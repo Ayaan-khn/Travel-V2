@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plans - TravelSync</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/discover.css">
+</head>
+
+<body>
+    <div class="page-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="brand-title">TravelSync</h1>
+            </div>
+            <div class="top-bar-right">
+                <button class="icon-btn" onclick="createNewPlan()">➕</button>
+            </div>
+        </div>
+
+        <!-- Tab Switcher -->
+        <div class="tab-switcher">
+            <button class="tab-btn active">My Plans</button>
+            <button class="tab-btn">Joined</button>
+            <button class="tab-btn">Public</button>
+        </div>
+
+        <!-- Plans Content -->
+        <div class="feed-container" id="plansContainer">
+            <div class="card">
+                <h3 class="card-title">📋 My Travel Plans</h3>
+                <p class="card-description">Create your first travel plan and find companions for your adventure!</p>
+                <div class="card-actions">
+                    <button class="btn btn-primary" onclick="createNewPlan()">+ Create Plan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="discover.html" class="nav-item">
+                <span class="nav-icon">🌟</span>
+                <span>Discover</span>
+            </a>
+            <a href="plans.html" class="nav-item active">
+                <span class="nav-icon">📋</span>
+                <span>Plans</span>
+            </a>
+            <a href="messages.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span>Messages</span>
+            </a>
+            <a href="legends.html" class="nav-item">
+                <span class="nav-icon">📜</span>
+                <span>Legends</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script>
+        requireAuth();
+        
+        function createNewPlan() {
+            alert('Create plan feature coming soon!');
+        }
+    </script>
+</body>
+</html>

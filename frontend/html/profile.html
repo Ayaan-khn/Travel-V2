@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
-
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/profile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 </head>
-
-<body class="centered">
+<body>
 
 <!-- Navigation -->
 <nav class="profile-nav">
-    <a href="map.html" class="nav-link">← Map</a>
+    <a href="discover.html" class="nav-link">← Back</a>
     <button class="logout-btn" onclick="logout()">Logout</button>
 </nav>
 
@@ -28,45 +26,138 @@
     <!-- Profile Picture Section -->
     <div class="pfp-wrapper">
         <img id="profilePfp" class="profile-pfp" alt="Profile Picture">
+        
+        <!-- Verification Badge -->
+        <div class="verification-badge" id="verificationBadge" title="Verified User" style="display: none;">✓</div>
 
         <div class="pfp-menu-btn" id="pfpMenuBtn">⋮</div>
 
         <div class="pfp-menu" id="pfpMenu">
             <div class="menu-close" id="closeMenu">×</div>
-            <div onclick="generateNewAvatar()">Generate Avatar</div>
-            <div onclick="uploadPhoto()">Upload Photo</div>
-            <div onclick="uploadBanner()">Upload Banner</div>
-            <div onclick="editBio()">Edit Bio</div>
+            <div onclick="generateNewAvatar()">🎲 Random Avatar</div>
+            <div onclick="uploadPhoto()">📷 Upload Photo</div>
+            <div onclick="uploadBanner()">🖼️ Upload Banner</div>
         </div>
     </div>
 
-    <!-- Username & Bio -->
+    <!-- Username, Age & Home City -->
     <h2 id="username" class="profile-username"></h2>
-    <p id="bioText" class="profile-bio"></p>
+    <div class="profile-meta">
+        <span id="userAge" class="editable-field" onclick="editAge()">Age: --</span>
+        <span class="meta-separator">•</span>
+        <span id="homeCity" class="editable-field" onclick="editHomeCity()">📍 Add City</span>
+    </div>
 
-    <!-- Stats Grid -->
+    <!-- Travel Status Selector -->
+    <div class="travel-status-selector" id="travelStatusSelector">
+        <span class="status-option" data-status="exploring" onclick="setTravelStatus('exploring')">🌍 Exploring</span>
+        <span class="status-option" data-status="open" onclick="setTravelStatus('open')">☕ Open to meet</span>
+        <span class="status-option" data-status="group" onclick="setTravelStatus('group')">👥 Looking for group</span>
+        <span class="status-option" data-status="passing" onclick="setTravelStatus('passing')">✈️ Passing through</span>
+        <span class="status-option" data-status="host" onclick="setTravelStatus('host')">🏡 Can host</span>
+        <span class="status-option" data-status="browsing" onclick="setTravelStatus('browsing')">🔒 Just browsing</span>
+    </div>
+
+    <!-- Bio Section -->
+    <div class="profile-section">
+        <div class="section-header">
+            <h3 class="section-title">About Me</h3>
+            <button class="edit-btn" onclick="editBio()">✏️ Edit</button>
+        </div>
+        <p id="bioText" class="profile-bio"></p>
+        
+        <!-- Languages -->
+        <div class="section-item">
+            <span class="item-label">Languages:</span>
+            <div class="languages-list" id="languagesList">
+                <span class="language-tag editable-tag" onclick="addLanguage()">+ Add</span>
+            </div>
+        </div>
+        
+        <!-- Interests -->
+        <div class="section-item">
+            <span class="item-label">Interests:</span>
+            <div class="interests-list" id="interestsList">
+                <span class="interest-tag editable-tag" onclick="addInterest()">+ Add</span>
+            </div>
+        </div>
+        
+        <!-- Travel Style -->
+        <div class="section-item">
+            <span class="item-label">Travel Style:</span>
+            <div class="travel-style-list" id="travelStyleList">
+                <span class="travel-style-tag editable-tag" onclick="editTravelStyle()">+ Add Style</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Travel Stats (Auto-calculated from user activity) -->
+    <div class="travel-stats-section">
+        <h3 class="section-title">Travel Stats</h3>
+        <div class="travel-stats-grid">
+            <div class="travel-stat">
+                <span class="stat-number" id="countriesVisited">0</span>
+                <span class="stat-label">Countries</span>
+            </div>
+            <div class="travel-stat">
+                <span class="stat-number" id="citiesVisited">0</span>
+                <span class="stat-label">Cities</span>
+            </div>
+            <div class="travel-stat">
+                <span class="stat-number" id="tripsCompleted">0</span>
+                <span class="stat-label">Trips</span>
+            </div>
+            <div class="travel-stat">
+                <span class="stat-number" id="distanceTraveled">0</span>
+                <span class="stat-label">km Traveled</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews / Trust Section -->
+    <div class="reviews-section">
+        <h3 class="section-title">Trust & Reviews</h3>
+        <div class="trust-badges" id="trustBadges">
+            <span class="trust-badge" id="emailBadge" onclick="verifyEmail()">📧 Verify Email</span>
+            <span class="trust-badge" id="phoneBadge" onclick="verifyPhone()">📱 Verify Phone</span>
+            <span class="trust-badge" id="identityBadge" onclick="verifyIdentity()">🆔 Verify Identity</span>
+        </div>
+        <div class="rating-display" id="ratingDisplay">
+            <span class="rating-stars" id="ratingStars">☆☆☆☆☆</span>
+            <span class="rating-text" id="ratingText">No reviews yet</span>
+        </div>
+        <div class="host-reviews" id="reviewsList">
+        </div>
+    </div>
+
+    <!-- Upcoming Trips -->
+    <div class="upcoming-trips-section" id="upcomingTripsSection">
+        <div class="section-header">
+            <h3 class="section-title">Upcoming Trips</h3>
+            <button class="edit-btn" onclick="addTrip()">+ Add</button>
+        </div>
+        <div id="tripsList">
+        </div>
+    </div>
+
+    <!-- Stats Grid (XP System) -->
     <div class="stats-grid">
-
         <div class="stat-card">
             <span class="stat-label">Title</span>
             <span id="title-value" class="stat-value">Wanderer</span>
         </div>
-
         <div class="stat-card">
             <span class="stat-label">Tier</span>
             <span id="tier-value" class="stat-value">Novice</span>
         </div>
-
         <div class="stat-card">
             <span class="stat-label">Level</span>
             <span id="level-value" class="stat-value">1</span>
         </div>
-
         <div class="stat-card">
             <span class="stat-label">XP</span>
             <span id="xp-value" class="stat-value">0</span>
         </div>
-
     </div>
 
     <!-- XP Bar -->
@@ -82,6 +173,30 @@
 
 </div>
 
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+    <a href="discover.html" class="nav-item">
+        <span class="nav-icon">🌟</span>
+        <span>Discover</span>
+    </a>
+    <a href="plans.html" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span>Plans</span>
+    </a>
+    <a href="messages.html" class="nav-item">
+        <span class="nav-icon">💬</span>
+        <span>Messages</span>
+    </a>
+    <a href="legends.html" class="nav-item">
+        <span class="nav-icon">📜</span>
+        <span>Legends</span>
+    </a>
+    <a href="profile.html" class="nav-item active">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+    </a>
+</nav>
+
 <!-- Hidden File Inputs -->
 <input type="file" id="photoInput" hidden accept="image/*">
 <input type="file" id="bannerInput" hidden accept="image/*">
@@ -93,14 +208,41 @@
             <h3>Crop Banner</h3>
             <button type="button" class="crop-modal-close" id="cropModalClose">&times;</button>
         </div>
-
         <div class="crop-container">
             <img id="bannerCropImg" alt="Banner Preview">
         </div>
-
         <div class="crop-modal-footer">
             <button type="button" class="btn btn-secondary" id="cropCancelBtn">Cancel</button>
             <button type="button" class="btn btn-primary" id="cropApplyBtn">Apply</button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="edit-modal">
+    <div class="edit-modal-content">
+        <div class="edit-modal-header">
+            <h3 id="editModalTitle">Edit</h3>
+            <button type="button" class="edit-modal-close" id="editModalClose">&times;</button>
+        </div>
+        <div class="edit-modal-body">
+            <input type="text" id="editModalInput" class="edit-modal-input" placeholder="Enter value">
+        </div>
+        <div class="edit-modal-footer">
+            <button type="button" class="btn btn-secondary" id="editModalCancel">Cancel</button>
+            <button type="button" class="btn btn-primary" id="editModalSave">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Selection Modal -->
+<div id="selectionModal" class="selection-modal">
+    <div class="selection-modal-content">
+        <div class="selection-modal-header">
+            <h3 id="selectionModalTitle">Select</h3>
+            <button type="button" class="edit-modal-close" id="selectionModalClose">&times;</button>
+        </div>
+        <div class="selection-modal-body" id="selectionOptions">
         </div>
     </div>
 </div>

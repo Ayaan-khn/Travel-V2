@@ -20,8 +20,8 @@ function initLogin() {
             return;
         }
 
-        setCurrentUser(validUser);
-        window.location.href = "map.html";
+setCurrentUser(validUser);
+        window.location.href = "discover.html";
     });
 }
 
